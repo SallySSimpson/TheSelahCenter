@@ -1,3 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Selah Center">
+<meta name="theme-color" content="#1a2e2a">
+<title>The Selah Center</title>
+<link rel="manifest" href="manifest.json">
+<!-- PWA splash + icons (inline SVG fallback) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%231a2e2a' rx='36'/%3E%3Ctext x='90' y='118' text-anchor='middle' font-size='80' font-family='serif'%3E🌿%3C/text%3E%3C/svg%3E">
+</head>
+<body>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -280,9 +295,201 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
 .hm-dot{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--text3);transition:all .12s}
 .hm-dot.done{background:var(--accent);border-color:var(--accent);color:#fff}
 .hm-pct{font-size:9px;color:var(--text3);width:26px;text-align:right;font-weight:600}
+
+/* ===== MOBILE / PWA STYLES ===== */
+:root{--bottom-nav-h:64px;--safe-bottom:env(safe-area-inset-bottom,0px);--safe-top:env(safe-area-inset-top,0px);}
+
+/* Bottom nav bar — mobile only */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--bottom-nav-h);
+  background:var(--text);
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-bottom:var(--safe-bottom);
+  z-index:1000;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.bottom-nav::-webkit-scrollbar{display:none}
+.bottom-nav-inner{
+  display:flex;
+  height:calc(var(--bottom-nav-h) - var(--safe-bottom));
+  min-width:max-content;
+  align-items:stretch;
+}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;padding:0 14px;cursor:pointer;
+  min-width:60px;flex-shrink:0;
+  color:#6a9898;font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  border-top:2px solid transparent;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.bn-item.active{color:#a8e4d8;border-top-color:#5888a0;}
+.bn-item:active{background:rgba(255,255,255,.05);}
+.bn-emoji{font-size:20px;line-height:1;margin-bottom:1px;}
+.bn-label{font-size:8px;white-space:nowrap;}
+
+/* Mobile drawer for sidebar on mobile (used in nav overflow) */
+.mobile-header{
+  display:none;
+  position:fixed;top:0;left:0;right:0;
+  height:calc(44px + var(--safe-top));
+  padding-top:var(--safe-top);
+  background:var(--text);
+  z-index:999;
+  align-items:center;
+  justify-content:space-between;
+  padding-left:1rem;padding-right:1rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.mobile-header-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;color:#dce8e0;letter-spacing:.06em;font-weight:500;
+}
+
+@media(max-width:768px){
+  /* Show/hide structure */
+  .sidebar{display:none !important;}
+  .bottom-nav{display:block;}
+  .mobile-header{display:flex;}
+  .topbar{display:none !important;}
+
+  /* Body & main wrap */
+  body{display:block;overflow:auto;-webkit-overflow-scrolling:touch;}
+  .main-wrap{
+    height:auto;overflow:visible;
+    padding-top:calc(44px + var(--safe-top));
+    padding-bottom:calc(var(--bottom-nav-h) + var(--safe-bottom) + 8px);
+  }
+  .content{
+    height:auto;overflow:visible;
+    padding:.75rem .9rem 1rem;
+  }
+
+  /* Grid layouts → single column */
+  .home-grid,.grid-2,.grid-3,.stat-grid{
+    display:flex !important;flex-direction:column !important;gap:.65rem !important;
+    grid-template-columns:none !important;
+  }
+  .hg-1,.hg-2{width:100% !important;}
+
+  /* Cards */
+  .card{padding:.9rem 1rem;border-radius:12px;margin-bottom:.65rem;}
+  .card-title{font-size:11px;margin-bottom:.65rem;}
+
+  /* Inputs + buttons */
+  .ar{flex-direction:column !important;gap:.4rem !important;}
+  .ar input,.ar select,.ar button{width:100% !important;max-width:100% !important;min-width:0 !important;}
+  .ai{font-size:14px !important;padding:.55rem .75rem !important;}
+  .btn{font-size:12px !important;padding:.5rem .9rem !important;}
+  .btn-sm{padding:.45rem .8rem !important;font-size:11px !important;}
+
+  /* Tabs scroll horizontally */
+  .ptab-row{flex-wrap:nowrap !important;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+  .ptab-row::-webkit-scrollbar{display:none}
+  .ptab{flex-shrink:0 !important;white-space:nowrap;font-size:11px !important;padding:.3rem .65rem !important;}
+
+  /* Stat cards row → 2 col grid */
+  .stat-grid{display:grid !important;grid-template-columns:repeat(2,1fr) !important;flex-direction:unset !important;gap:.5rem !important;}
+  .stat-card{padding:.7rem .65rem;border-radius:10px;}
+  .stat-val{font-size:20px !important;}
+  .stat-lbl{font-size:9px !important;}
+
+  /* Greeting hero */
+  .greeting-hero{padding:1rem 1.1rem;border-radius:12px;}
+  .gh-name{font-size:22px !important;}
+  .gh-verse{font-size:11px !important;margin-top:.5rem;}
+
+  /* Calendar grids */
+  .mg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .md{min-height:32px !important;font-size:9px !important;padding:3px 2px !important;border-radius:5px !important;}
+  .mdh{font-size:8px !important;padding:2px 0 !important;}
+
+  /* Tasks / lists */
+  .task-item{padding:.55rem 0;}
+  .tt{font-size:12px !important;}
+  .tcb{width:20px !important;height:20px !important;margin-top:1px !important;}
+
+  /* Tags */
+  .tag{font-size:8px !important;padding:2px 6px !important;}
+
+  /* Textarea */
+  textarea.na,.na{font-size:13px !important;line-height:1.6 !important;}
+  textarea.bi,.bi{font-size:13px !important;}
+
+  /* Focus edit bar */
+  .focus-edit-bar{flex-direction:column !important;padding:.6rem .9rem !important;}
+  .focus-input{font-size:13px !important;}
+
+  /* Pillar header cards */
+  .ph{padding:.85rem 1rem !important;margin-bottom:.65rem !important;}
+  .ph-title{font-size:18px !important;}
+  .ph-sub{font-size:11px !important;}
+
+  /* Home mini calendar */
+  .hm{border-radius:10px;}
+
+  /* Brain dump */
+  .bi{min-height:80px !important;}
+
+  /* Habit dots */
+  .hdot{width:26px !important;height:26px !important;}
+
+  /* Touch-friendly tap targets — anything clickable ≥44px tall */
+  .sb-item,.bn-item,.ptab,.btn{min-height:44px;}
+  .ptab{display:flex;align-items:center;justify-content:center;}
+
+  /* Iframe embeds responsive */
+  iframe{max-width:100% !important;height:260px !important;}
+
+  /* Home AI focus bar */
+  #h-ai-focus{font-size:11px !important;}
+
+  /* Overview calendar card */
+  .hm-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+}
+
+/* Standalone PWA mode (added to home screen) */
+@media(display-mode:standalone){
+  body{padding-top:0;}
+}
 </style>
 
 <h2 class="sr-only">The Selah Center</h2>
+<!-- MOBILE HEADER (replaces topbar on mobile) -->
+<div class="mobile-header" id="mobile-header">
+  <div class="mobile-header-title" id="mobile-section-title">🌿 Overview</div>
+  <div style="display:flex;gap:.6rem;align-items:center">
+    <div class="weather-chip" id="weather-chip-m" style="font-size:10px;color:#a8c4b4">🌤</div>
+    <div onclick="tfe()" style="font-size:10px;color:#5888a0;cursor:pointer;padding:.3rem .5rem;background:rgba(88,136,160,.15);border-radius:6px">✦ Focus</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV (mobile only) -->
+<div class="bottom-nav" id="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bn-item active" data-view="home" onclick="navTo('home',this);syncBN(this)"><span class="bn-emoji">💻</span><span class="bn-label">Home</span></div>
+    <div class="bn-item" data-view="calendar" onclick="navTo('calendar',this);syncBN(this)"><span class="bn-emoji">📆</span><span class="bn-label">Calendar</span></div>
+    <div class="bn-item" data-view="tasks" onclick="navTo('tasks',this);syncBN(this)"><span class="bn-emoji">📌</span><span class="bn-label">Tasks</span></div>
+    <div class="bn-item" data-view="braindump" onclick="navTo('braindump',this);syncBN(this)"><span class="bn-emoji">🧠</span><span class="bn-label">Brain</span></div>
+    <div class="bn-item" data-view="habits" onclick="navTo('habits',this);syncBN(this)"><span class="bn-emoji">🧩</span><span class="bn-label">Habits</span></div>
+    <div style="width:1px;background:rgba(255,255,255,.08);margin:10px 4px;flex-shrink:0"></div>
+    <div class="bn-item" data-view="faith" onclick="navTo('faith',this);syncBN(this)"><span class="bn-emoji">🕊️</span><span class="bn-label">Abide</span></div>
+    <div class="bn-item" data-view="marriage" onclick="navTo('marriage',this);syncBN(this)"><span class="bn-emoji">💍</span><span class="bn-label">1+1=3</span></div>
+    <div class="bn-item" data-view="thatgirl" onclick="navTo('thatgirl',this);syncBN(this)"><span class="bn-emoji">💅🏾</span><span class="bn-label">THAT Girl</span></div>
+    <div class="bn-item" data-view="finances" onclick="navTo('finances',this);syncBN(this)"><span class="bn-emoji">💰</span><span class="bn-label">The Bag</span></div>
+    <div class="bn-item" data-view="homepillar" onclick="navTo('homepillar',this);syncBN(this)"><span class="bn-emoji">🏠</span><span class="bn-label">Abode</span></div>
+    <div class="bn-item" data-view="pneuma" onclick="navTo('pneuma',this);syncBN(this)"><span class="bn-emoji">📸</span><span class="bn-label">Pneuma</span></div>
+    <div class="bn-item" data-view="signedsal" onclick="navTo('signedsal',this);syncBN(this)"><span class="bn-emoji">💌</span><span class="bn-label">Signed S</span></div>
+    <div class="bn-item" data-view="simpsons" onclick="navTo('simpsons',this);syncBN(this)"><span class="bn-emoji">🫂</span><span class="bn-label">Simpsons</span></div>
+    <div class="bn-item" data-view="cultivate" onclick="navTo('cultivate',this);syncBN(this)"><span class="bn-emoji">⛪</span><span class="bn-label">Cultivate</span></div>
+    <div class="bn-item" data-view="wellness" onclick="navTo('wellness',this);syncBN(this)"><span class="bn-emoji">💪🏾</span><span class="bn-label">Temple</span></div>
+  </div>
+</div>
+
 <div class="sidebar">
   <div class="sb-brand">
     <div class="sb-brand-name">The Selah Center</div>
@@ -334,19 +541,29 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
     <!-- HOME -->
     <div class="view active" id="view-home">
 
-      <!-- ROW 1: Greeting + Clock/Weather + Stats -->
-      <div class="home-grid" style="margin-bottom:.75rem">
-        <div class="hg-2">
+      <!-- ROW 1: Greeting (2/3) + Clock+Weather (1/3). AI Focus is under greeting, same column width -->
+      <div class="home-grid" style="margin-bottom:1rem">
+        <div class="hg-2" style="display:flex;flex-direction:column;gap:.75rem">
           <div class="greeting-hero">
             <div class="gh-name" style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;color:#fff;line-height:1.2">Heyyy Sally, girl!! 🙌🏾</div>
             <div class="gh-verse">"But seek first his kingdom and his righteousness, and all these things will be given to you as well." — Matthew 6:33</div>
+          </div>
+          <div class="home-card" style="border-left:3px solid var(--accent)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+              <div style="display:flex;align-items:center;gap:.5rem">
+                <span style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent2);font-weight:700">✦ AI Today's Focus</span>
+                <span style="font-size:9px;color:var(--text3)">— set your energy below, then generate</span>
+              </div>
+              <button onclick="runAIFocus()" style="background:var(--accent);border:none;border-radius:6px;padding:.25rem .75rem;font-size:10px;color:#fff;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:600">✦ Generate</button>
+            </div>
+            <div id="h-ai-focus" style="font-size:12px;color:var(--text2);font-style:italic;line-height:1.7;min-height:36px">Set your energy level in the check-in card, add priorities, then click Generate.</div>
           </div>
         </div>
         <div class="hg-1" style="display:flex;flex-direction:column;gap:.75rem">
           <div class="home-card" style="text-align:center;padding:1rem;flex:1">
             <div id="live-clock"></div>
           </div>
-          <div class="home-card">
+          <div class="home-card" style="flex:1">
             <div id="weather-detail" style="font-size:12px;color:var(--text2);margin-bottom:.6rem">Loading weather...</div>
             <div class="stat-row">
               <div class="stat-mini"><div class="stat-val" id="st1">0</div><div class="stat-lbl">Done</div></div>
@@ -355,18 +572,6 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- AI FOCUS BAR — separate card below greeting -->
-      <div class="home-card" style="margin-bottom:1rem;border-left:3px solid var(--accent)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-          <div style="display:flex;align-items:center;gap:.5rem">
-            <span style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent2);font-weight:700">✦ AI Today's Focus</span>
-            <span style="font-size:9px;color:var(--text3)">— set your energy below, then generate</span>
-          </div>
-          <button onclick="runAIFocus()" style="background:var(--accent);border:none;border-radius:6px;padding:.25rem .75rem;font-size:10px;color:#fff;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:600">✦ Generate</button>
-        </div>
-        <div id="h-ai-focus" style="font-size:12px;color:var(--text2);font-style:italic;line-height:1.7;min-height:36px">Set your energy level in the check-in card, add priorities, then click Generate.</div>
       </div>
 
       <!-- ROW 2: Top Priorities FULL WIDTH -->
@@ -422,6 +627,18 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
         </div>
       </div>
 
+      <!-- GOOGLE CALENDAR LIVE EVENTS -->
+      <div class="home-card" id="gcal-card" style="margin-bottom:1rem;border-left:3px solid #4285F4">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+          <span class="card-title" style="margin-bottom:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="#4285F4" style="flex-shrink:0"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg> Google Calendar</span>
+          <div style="display:flex;gap:.4rem;align-items:center">
+            <span id="gcal-status" style="font-size:9px;color:var(--text3)">Not connected</span>
+            <button id="gcal-btn" onclick="handleGCalBtn()" style="font-size:10px;padding:.2rem .6rem;border-radius:6px;border:1px solid #4285F4;background:transparent;color:#4285F4;cursor:pointer;font-family:inherit;font-weight:600">Connect</button>
+          </div>
+        </div>
+        <div id="gcal-events" style="font-size:12px;color:var(--text3);font-style:italic">Connect Google Calendar to see your events here.</div>
+      </div>
+
       <!-- ROW 4: Habits + Quick Notes + Time Blocks -->
       <div class="home-grid" style="margin-bottom:1rem">
         <div class="hg-1">
@@ -437,8 +654,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
         <div class="hg-1">
           <div class="home-card">
             <div class="card-title"><i class="ti ti-pencil" aria-hidden="true"></i>Quick Notes</div>
-            <textarea class="notes-capture" id="quick-notes" placeholder="Capture a thought, idea, or anything on your mind..." onchange="S.quickNotes=this.value;sv()"></textarea>
-            <button class="btn btn-o btn-sm" style="margin-top:.5rem" onclick="sv()">Save</button>
+            <textarea class="notes-capture" id="quick-notes" placeholder="Capture a thought, idea, or anything on your mind..." oninput="S.quickNotes=this.value"></textarea>
+            <button class="btn btn-o btn-sm" style="margin-top:.5rem" onclick="S.quickNotes=document.getElementById('quick-notes').value;sv();this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button>
           </div>
         </div>
         <div class="hg-1">
@@ -672,7 +889,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
     <div class="card"><div class="card-title"><i class="ti ti-heart" aria-hidden="true"></i> Prayer List</div><div id="prl"></div>
       <div class="ar"><input class="ai" id="pr-n" placeholder="Person or request..." style="flex:1;min-width:120px"><input class="ai" id="pr-nt" placeholder="Details / scripture..." style="flex:1;min-width:120px"><select class="ai" id="pr-t" style="max-width:110px"><option value="person">Person</option><option value="intercession">Intercession</option><option value="personal">Personal</option><option value="ministry">Ministry</option></select><button class="btn btn-faith btn-sm" onclick="addPr()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Prayer Journal</div><textarea class="na" id="pj" placeholder="Write a prayer, answered prayers, things you're believing for..." rows="6" onchange="sfn('pjournal',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-faith btn-sm" onclick="sfn('pjournal',document.getElementById('pj').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Prayer Journal</div><textarea class="na" id="pj" placeholder="Write a prayer, answered prayers, things you're believing for..." rows="6" onchange="sfn('pjournal',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-faith btn-sm" onclick="sfn('pjournal',document.getElementById('pj').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
     <div class="card"><div class="card-title"><i class="ti ti-list-check" aria-hidden="true"></i> Prayer Request Log</div><div id="faith-prayer-log"></div><div class="ar" style="margin-top:.5rem"><input class="ai" id="pray-inp" placeholder="Prayer request..." style="flex:1"><button class="btn btn-faith btn-sm" onclick="addPray()">+ Add</button></div></div>
   </div>
 
@@ -775,7 +992,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
     <div class="card"><div class="card-title"><i class="ti ti-shopping-cart" aria-hidden="true"></i> Grocery List</div><div id="grl"></div>
       <div class="ar"><input class="ai" id="gr-it" placeholder="Add grocery item..." style="flex:1;min-width:140px"><select class="ai" id="gr-ct" style="max-width:110px"><option>Produce</option><option>Protein</option><option>Pantry</option><option>Dairy</option><option>Frozen</option><option>Other</option></select><button class="btn btn-home btn-sm" onclick="addGr()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Meal Prep Notes</div><textarea class="na" id="ml-nt" placeholder="Anti-inflammatory focus, Ray's protein needs, batch cooking plans..." rows="5" onchange="shn('mealnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-home btn-sm" onclick="shn('mealnotes',document.getElementById('ml-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Meal Prep Notes</div><textarea class="na" id="ml-nt" placeholder="Anti-inflammatory focus, Ray's protein needs, batch cooking plans..." rows="5" onchange="shn('mealnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-home btn-sm" onclick="shn('mealnotes',document.getElementById('ml-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="hview" id="hpv-cl" style="display:none">
     <div class="card"><div class="card-title"><i class="ti ti-sparkles" aria-hidden="true"></i> Cleaning Checklist</div>
@@ -789,13 +1006,13 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
     <div class="card"><div class="card-title"><i class="ti ti-palette" aria-hidden="true"></i> Room-by-Room Projects</div><div id="drl"></div>
       <div class="ar"><input class="ai" id="dr-nm" placeholder="Room..." style="flex:1;min-width:110px"><input class="ai" id="dr-st" placeholder="Status..." style="flex:1;min-width:110px"><input class="ai" id="dr-pr" placeholder="Priority item..." style="flex:1;min-width:110px"><button class="btn btn-home btn-sm" onclick="addDr()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-color-swatch" aria-hidden="true"></i> Design Vision</div><textarea class="na" id="ds-nt" placeholder="Aesthetic: minimalist, girly, techy. Palette: blush, grey, black, rose, cream..." rows="6" onchange="shn('designnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-home btn-sm" onclick="shn('designnotes',document.getElementById('ds-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-color-swatch" aria-hidden="true"></i> Design Vision</div><textarea class="na" id="ds-nt" placeholder="Aesthetic: minimalist, girly, techy. Palette: blush, grey, black, rose, cream..." rows="6" onchange="shn('designnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-home btn-sm" onclick="shn('designnotes',document.getElementById('ds-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="hview" id="hpv-mt" style="display:none">
     <div class="card"><div class="card-title"><i class="ti ti-tool" aria-hidden="true"></i> Maintenance Tasks</div><div id="mtl"></div>
       <div class="ar"><input class="ai" id="mt-tx" placeholder="Task or repair..." style="flex:1;min-width:140px"><select class="ai" id="mt-pr" style="max-width:85px"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select><button class="btn btn-home btn-sm" onclick="addMt()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Household Notes</div><textarea class="na" id="hn-nt" placeholder="Vendors, account numbers, warranty info, lease details..." rows="5" onchange="shn('householdnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-home btn-sm" onclick="shn('householdnotes',document.getElementById('hn-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Household Notes</div><textarea class="na" id="hn-nt" placeholder="Vendors, account numbers, warranty info, lease details..." rows="5" onchange="shn('householdnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-home btn-sm" onclick="shn('householdnotes',document.getElementById('hn-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
 </div>
 
@@ -853,7 +1070,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div class="card">
         <div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Meeting Notes</div>
         <textarea class="na" id="th-mn" placeholder="Topics covered, who showed up, what God moved in, follow-ups..." rows="7" onchange="scn('meetingnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea>
-        <button class="btn btn-cult btn-sm" onclick="scn('meetingnotes',document.getElementById('th-mn').value)">Save</button>
+        <button class="btn btn-cult btn-sm" onclick="scn('meetingnotes',document.getElementById('th-mn').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button>
       </div>
     </div>
     <div class="card">
@@ -870,7 +1087,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
     <div class="card"><div class="card-title"><i class="ti ti-award" aria-hidden="true"></i> Elder Training Progress</div><div id="etl"></div>
       <div class="ar"><input class="ai" id="et-tx" placeholder="Training task or milestone..." style="flex:1;min-width:140px"><select class="ai" id="et-ct" style="max-width:115px"><option>Teaching</option><option>Pastoral Care</option><option>Administration</option><option>Feedback</option><option>Character</option></select><button class="btn btn-cult btn-sm" onclick="addET()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Elder Training Journal</div><textarea class="na" id="et-jn" placeholder="Feedback received, growth areas, what God is developing in you as a leader..." rows="6" onchange="scn('elderjournal',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-cult btn-sm" onclick="scn('elderjournal',document.getElementById('et-jn').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Elder Training Journal</div><textarea class="na" id="et-jn" placeholder="Feedback received, growth areas, what God is developing in you as a leader..." rows="6" onchange="scn('elderjournal',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-cult btn-sm" onclick="scn('elderjournal',document.getElementById('et-jn').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="cview" id="cpv-nt" style="display:none">
     <div class="card"><div class="card-title"><i class="ti ti-notebook" aria-hidden="true"></i> Ministry Notes & Logs</div><div id="cnl"></div>
@@ -913,10 +1130,10 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div class="card"><div class="card-title"><i class="ti ti-activity" aria-hidden="true"></i> This Week's Workouts</div><div id="w-wkl"></div></div>
       <div class="card"><div class="card-title"><i class="ti ti-target" aria-hidden="true"></i> Active Goals</div><div id="w-agl"></div></div>
     </div>
-    <!-- Daily Habit Tracker with Supplements -->
+    <!-- Supplement Weekly Tracker Sun-Sat -->
     <div class="card">
-      <div class="card-title"><i class="ti ti-checklist" aria-hidden="true"></i> Daily Habit Tracker 💊</div>
-      <div id="w-daily-tracker"></div>
+      <div class="card-title"><i class="ti ti-pill" aria-hidden="true"></i> Daily Supplement Check-in 💊 <span style="font-size:9px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">— Sun to Sat</span></div>
+      <div id="w-supp-weekly"></div>
     </div>
   </div>
   <div class="wview" id="wpv-ft" style="display:none">
@@ -930,7 +1147,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
         <button class="btn btn-well btn-sm" onclick="addWO()">Log</button>
       </div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Fitness Goals & Program Notes</div><textarea class="na" id="ft-nt" placeholder="Current program, goals, PR tracking, coach notes, what's working..." rows="5" onchange="swn('fitnessnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-well btn-sm" onclick="swn('fitnessnotes',document.getElementById('ft-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Fitness Goals & Program Notes</div><textarea class="na" id="ft-nt" placeholder="Current program, goals, PR tracking, coach notes, what's working..." rows="5" onchange="swn('fitnessnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-well btn-sm" onclick="swn('fitnessnotes',document.getElementById('ft-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="wview" id="wpv-nu" style="display:none">
     <div class="card">
@@ -941,7 +1158,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       </div>
       <button class="btn btn-well btn-sm" style="margin-top:.75rem" onclick="saveNutrition()">Save</button>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Nutrition Notes & Recipes</div><textarea class="na" id="nu-nt" placeholder="Recipes, meal ideas, what to avoid this week, how energy is tracking..." rows="5" onchange="swn('nutritionnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-well btn-sm" onclick="swn('nutritionnotes',document.getElementById('nu-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Nutrition Notes & Recipes</div><textarea class="na" id="nu-nt" placeholder="Recipes, meal ideas, what to avoid this week, how energy is tracking..." rows="5" onchange="swn('nutritionnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-well btn-sm" onclick="swn('nutritionnotes',document.getElementById('nu-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="wview" id="wpv-pg" style="display:none">
     <div class="card">
@@ -953,7 +1170,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div id="w-books"></div>
       <div class="ar"><input class="ai" id="bk-ti" placeholder="Book title..." style="flex:1;min-width:130px"><input class="ai" id="bk-au" placeholder="Author..." style="flex:1;min-width:120px"><select class="ai" id="bk-st" style="max-width:110px"><option value="reading">Reading</option><option value="done">Done</option><option value="next">Up Next</option></select><button class="btn btn-well btn-sm" onclick="addBook()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Growth Journal</div><textarea class="na" id="pg-jn" placeholder="Reflections, breakthroughs, what you're learning about yourself..." rows="5" onchange="swn('growthjournal',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-well btn-sm" onclick="swn('growthjournal',document.getElementById('pg-jn').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Growth Journal</div><textarea class="na" id="pg-jn" placeholder="Reflections, breakthroughs, what you're learning about yourself..." rows="5" onchange="swn('growthjournal',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-well btn-sm" onclick="swn('growthjournal',document.getElementById('pg-jn').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
 </div>
 
@@ -984,6 +1201,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div id="ssl-master-tasks"></div>
       <div class="ar" style="margin-top:.5rem">
         <input class="ai" id="ssl-task-t" placeholder="Add a task..." style="flex:1">
+        <input class="ai" id="ssl-task-d" type="date" style="max-width:130px">
         <select class="ai" id="ssl-task-p" style="max-width:85px"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
         <button class="btn btn-sal btn-sm" onclick="addSSLTask()">+ Add</button>
       </div>
@@ -1018,7 +1236,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
         <button class="btn btn-sal btn-sm" onclick="addContent()">Add</button>
       </div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-bulb" aria-hidden="true"></i> Content Ideas Vault</div><textarea class="na" id="co-id" placeholder="Reel ideas, caption drafts, series concepts, topics your audience needs..." rows="5" onchange="ssn('contentideas',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-sal btn-sm" onclick="ssn('contentideas',document.getElementById('co-id').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-bulb" aria-hidden="true"></i> Content Ideas Vault</div><textarea class="na" id="co-id" placeholder="Reel ideas, caption drafts, series concepts, topics your audience needs..." rows="5" onchange="ssn('contentideas',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-sal btn-sm" onclick="ssn('contentideas',document.getElementById('co-id').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="sview" id="spv-gs" style="display:none">
     <div class="card">
@@ -1026,7 +1244,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div id="gs-clients"></div>
       <div class="ar"><input class="ai" id="gs-nm" placeholder="Client name..." style="flex:1;min-width:130px"><input class="ai" id="gs-ses" placeholder="Session # or phase..." style="max-width:120px"><select class="ai" id="gs-st" style="max-width:100px"><option value="active">Active</option><option value="inquiry">Inquiry</option><option value="complete">Complete</option></select><button class="btn btn-sal btn-sm" onclick="addClient()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Coaching Curriculum Notes</div><textarea class="na" id="gs-nt" placeholder="10-session outline, session themes, homework assignments, client agreements, frameworks..." rows="6" onchange="ssn('coachingnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-sal btn-sm" onclick="ssn('coachingnotes',document.getElementById('gs-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Coaching Curriculum Notes</div><textarea class="na" id="gs-nt" placeholder="10-session outline, session themes, homework assignments, client agreements, frameworks..." rows="6" onchange="ssn('coachingnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-sal btn-sm" onclick="ssn('coachingnotes',document.getElementById('gs-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
     <!-- Good Steward Calendar View -->
     <div class="card">
       <div class="card-title"><i class="ti ti-calendar" aria-hidden="true"></i> Coaching Calendar</div>
@@ -1055,7 +1273,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div id="sp-list"></div>
       <div class="ar"><input class="ai" id="sp-ti" placeholder="Event / church / organization..." style="flex:1;min-width:130px"><input class="ai" id="sp-dt" type="date" style="max-width:125px"><input class="ai" id="sp-to" placeholder="Topic / title..." style="flex:1;min-width:120px"><select class="ai" id="sp-st" style="max-width:100px"><option value="upcoming">Upcoming</option><option value="confirmed">Confirmed</option><option value="done">Done</option><option value="inquiry">Inquiry</option></select><button class="btn btn-sal btn-sm" onclick="addSpeaking()">Add</button></div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Speaking Notes & Bio</div><textarea class="na" id="sp-nt" placeholder="Speaker bio, topics you speak on, what makes your ministry unique..." rows="5" onchange="ssn('speakingnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-sal btn-sm" onclick="ssn('speakingnotes',document.getElementById('sp-nt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Speaking Notes & Bio</div><textarea class="na" id="sp-nt" placeholder="Speaker bio, topics you speak on, what makes your ministry unique..." rows="5" onchange="ssn('speakingnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-sal btn-sm" onclick="ssn('speakingnotes',document.getElementById('sp-nt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="sview" id="spv-br" style="display:none">
     <div class="card"><div class="card-title"><i class="ti ti-palette" aria-hidden="true"></i> Brand Identity</div>
@@ -1111,7 +1329,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div id="pn-clients"></div>
       <div class="ar">
         <input class="ai" id="pn-cnm" placeholder="Client name..." style="flex:1;min-width:110px">
-        <select class="ai" id="pn-cty" style="max-width:130px"><option>Photo</option><option>Consult</option><option>Content</option><option>Content & Photo</option><option>Strategy</option><option>Full Package</option><option>Engagement</option><option>Wedding</option><option>Portrait</option><option>Branding</option><option>Family</option><option>Event</option></select>
+        <select class="ai" id="pn-cty" style="max-width:130px"><option>Photo</option><option>Photo & Content</option><option>Consult</option><option>Content</option><option>Content & Photo</option><option>Strategy</option><option>Full Package</option><option>Engagement</option><option>Wedding</option><option>Portrait</option><option>Branding</option><option>Family</option><option>Event</option></select>
         <select class="ai" id="pn-cst" style="max-width:110px"><option value="inquiry">Inquiry</option><option value="booked">Booked</option><option value="active">Active</option><option value="done">Done</option></select>
         <select class="ai" id="pn-pay" style="max-width:130px"><option value="pending_deposit">Pending Deposit</option><option value="deposit_paid">Deposit Paid</option><option value="past_due">Past Due</option><option value="paid">Paid in Full</option></select>
         <input class="ai" id="pn-total" placeholder="Total $" type="number" style="max-width:80px">
@@ -1137,6 +1355,11 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Pneuma Revenue — Live from Google Sheets</div>
       <div style="font-size:10px;color:var(--text3);margin-bottom:.5rem">Updates automatically. <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ69Bxqi6SMW_dVjkK27ybnx-mtosy4jA-JwwL7FVoVBKXi252DoeHVfSGuKPOgOue8l8CjIfAQxVsg/pubhtml?gid=426150793&single=true" target="_blank" style="color:var(--pneuma-accent)">Open sheet ↗</a></div>
       <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ69Bxqi6SMW_dVjkK27ybnx-mtosy4jA-JwwL7FVoVBKXi252DoeHVfSGuKPOgOue8l8CjIfAQxVsg/pubhtml?gid=426150793&single=true" style="width:100%;height:380px;border:1px solid var(--border);border-radius:10px;margin-bottom:.75rem" frameborder="0"></iframe>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> Revenue / Expenses / Profit</div>
+      <div id="pn-rev-widget"></div>
+      <div style="margin-top:.75rem;border-top:1px solid var(--bg2);padding-top:.6rem"><div class="sl">Log a Transaction</div><div class="ar"><input class="ai" id="pnrw-desc" placeholder="Description..." style="flex:1;min-width:110px"><input class="ai" id="pnrw-amt" type="number" placeholder="Amount $" style="max-width:90px"><select class="ai" id="pnrw-type" style="max-width:110px"><option value="revenue">Revenue</option><option value="expense">Expense</option></select><button class="btn btn-pneuma btn-sm" onclick="addPNRevTxn()">Add</button></div><div id="pn-rev-txns" style="margin-top:.5rem"></div></div>
     </div>
   </div>
   <div class="pnview" id="pnpv-rb" style="display:none">
@@ -1170,8 +1393,8 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       </div>
     </div>
     <div class="grid-2">
-      <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Brand Direction</div><textarea class="na" id="pn-bdir" placeholder="Aesthetic direction, client types to focus on, what makes Pneuma unique, Ray's role in the creative..." rows="5" onchange="spnn('branddirection',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-pneuma btn-sm" onclick="spnn('branddirection',document.getElementById('pn-bdir').value)">Save</button></div>
-      <div class="card"><div class="card-title"><i class="ti ti-building" aria-hidden="true"></i> LLC & Business Setup</div><textarea class="na" id="pn-llc" placeholder="LLC status, EIN, bank account, business address, insurance, contract templates, pricing packages..." rows="5" onchange="spnn('llcnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-pneuma btn-sm" onclick="spnn('llcnotes',document.getElementById('pn-llc').value)">Save</button></div>
+      <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Brand Direction</div><textarea class="na" id="pn-bdir" placeholder="Aesthetic direction, client types to focus on, what makes Pneuma unique, Ray's role in the creative..." rows="5" onchange="spnn('branddirection',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-pneuma btn-sm" onclick="spnn('branddirection',document.getElementById('pn-bdir').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
+      <div class="card"><div class="card-title"><i class="ti ti-building" aria-hidden="true"></i> LLC & Business Setup</div><textarea class="na" id="pn-llc" placeholder="LLC status, EIN, bank account, business address, insurance, contract templates, pricing packages..." rows="5" onchange="spnn('llcnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-pneuma btn-sm" onclick="spnn('llcnotes',document.getElementById('pn-llc').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
     </div>
   </div>
   <div class="pnview" id="pnpv-nt" style="display:none">
@@ -1257,6 +1480,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
       <div id="sm-master-tasks"></div>
       <div class="ar" style="margin-top:.5rem">
         <input class="ai" id="sm-task-t" placeholder="Add a brand task..." style="flex:1">
+        <input class="ai" id="sm-task-d" type="date" style="max-width:130px">
         <select class="ai" id="sm-task-sec" style="max-width:130px"><option>Content</option><option>Podcast</option><option>Merch & Revenue</option><option>Vision</option><option>General</option></select>
         <select class="ai" id="sm-task-p" style="max-width:85px"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
         <button class="btn btn-simpsons btn-sm" onclick="addSMTask()">+ Add</button>
@@ -1292,7 +1516,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
         <button class="btn btn-simpsons btn-sm" onclick="addSmContent()">Add</button>
       </div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-bulb" aria-hidden="true"></i> Content Ideas & Ray's Strengths</div><textarea class="na" id="sm-coid" placeholder="Ray's strong on camera, phone creator. Ideas for series, formats, what plays to your dynamic, Ray's formal onboarding plan..." rows="5" onchange="ssmn('contentideas',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-simpsons btn-sm" onclick="ssmn('contentideas',document.getElementById('sm-coid').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-bulb" aria-hidden="true"></i> Content Ideas & Ray's Strengths</div><textarea class="na" id="sm-coid" placeholder="Ray's strong on camera, phone creator. Ideas for series, formats, what plays to your dynamic, Ray's formal onboarding plan..." rows="5" onchange="ssmn('contentideas',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-simpsons btn-sm" onclick="ssmn('contentideas',document.getElementById('sm-coid').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="smview" id="smpv-pod" style="display:none">
     <div class="card">
@@ -1306,7 +1530,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
         <button class="btn btn-simpsons btn-sm" onclick="addEpisode()">Add</button>
       </div>
     </div>
-    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Podcast Notes & Direction</div><textarea class="na" id="sm-podnt" placeholder="Show concept, themes, episode ideas, structure, who you want to interview, how it ties to the brand..." rows="5" onchange="ssmn('podnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-simpsons btn-sm" onclick="ssmn('podnotes',document.getElementById('sm-podnt').value)">Save</button></div>
+    <div class="card"><div class="card-title"><i class="ti ti-notes" aria-hidden="true"></i> Podcast Notes & Direction</div><textarea class="na" id="sm-podnt" placeholder="Show concept, themes, episode ideas, structure, who you want to interview, how it ties to the brand..." rows="5" onchange="ssmn('podnotes',this.value)" style="width:100%;margin-bottom:.5rem"></textarea><button class="btn btn-simpsons btn-sm" onclick="ssmn('podnotes',document.getElementById('sm-podnt').value);this.textContent='✓ Saved';setTimeout(()=>this.textContent='Save',1500)">Save</button></div>
   </div>
   <div class="smview" id="smpv-mer" style="display:none">
     <div class="card">
@@ -1381,6 +1605,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
           <div id="tg-tasks-list"></div>
           <div class="ar" style="margin-top:.5rem">
             <input class="ai" id="tg-task-t" placeholder="Add a task..." style="flex:1">
+            <input class="ai" id="tg-task-d" type="date" style="max-width:130px">
             <select class="ai" id="tg-task-p" style="max-width:85px"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
             <button class="btn btn-sm" style="background:#a87898;color:#fff" onclick="addTGTask()">+ Add</button>
           </div>
@@ -1712,8 +1937,8 @@ let S={
   nxt:{task:11,acct:7,bcat:7,fgoal:4,txn:4,pr:4,ser:2,gn:1,dn:3,mg:4,mn:1,meal:5,gr:6,cl:9,dr:4,mt:3,he:4,hm:3,hc:4,et:4,cn:1,wo:3,su:6,pg:4,bk:3,co:4,cl2:2,sp:1,wi:4,pncl:3,pnsh:2,pnrv:2,pnrb:8,pnnt:1,smco:3,smep:2,smme:3,smmi:1},
 };
 
-async function ld(){try{const r=await window.storage.get('sal-v11p2');if(r&&r.value){const d=JSON.parse(r.value);Object.assign(S,d);}}catch(e){}}
-async function sv(){try{await window.storage.set('sal-v11p2',JSON.stringify(S));}catch(e){}}
+async function ld(){try{const raw=localStorage.getItem('sal-v11p2');if(raw){const d=JSON.parse(raw);Object.assign(S,d);return;}if(window.storage&&typeof window.storage.get==='function'){const r=await window.storage.get('sal-v11p2');if(r&&r.value){const d=JSON.parse(r.value);Object.assign(S,d);localStorage.setItem('sal-v11p2',r.value);}}}catch(e){console.error('ld:',e);}}
+async function sv(){try{const json=JSON.stringify(S);localStorage.setItem('sal-v11p2',json);if(window.storage&&typeof window.storage.set==='function')await window.storage.set('sal-v11p2',json);}catch(e){console.error('sv:',e);}}
 
 function toDS(d){return d.toISOString().slice(0,10);}
 function today(){return toDS(new Date());}
@@ -1748,7 +1973,7 @@ function uStats(){
 
 function rHP(){const el=document.getElementById('h-pri');const its=S.tasks.filter(t=>t.priority==='high'&&!t.done).slice(0,4);if(!its.length){el.innerHTML='<div class="es">No high priority tasks 🎉</div>';return;}el.innerHTML=its.map(t=>`<div class="task-item"><div class="tcb ${t.done?'done':''}" onclick="tgT(${t.id},'home')" role="button" aria-label="Toggle"></div><div><div class="tt">${t.text}</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag tg-p">${t.pillar}</span>${t.date?`<span class="tag tg-d">${t.date}</span>`:''}</div></div></div>`).join('');}
 
-function rHF(){const el=document.getElementById('h-fin');const tot=S.accounts.reduce((s,a)=>s+a.balance,0);const sav=S.accounts.filter(a=>a.owner==='savings').reduce((s,a)=>s+a.balance,0);el.innerHTML=`<div style="display:flex;gap:.5rem;margin-bottom:.4rem"><div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Total</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--accent);font-weight:600">$${tot.toLocaleString()}</div></div><div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Savings</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--sage);font-weight:600">$${sav.toLocaleString()}</div></div></div><div style="font-size:11px;color:var(--text3);text-align:center">${S.accounts.length} accounts tracked</div>`;}
+function rHF(){const el=document.getElementById('h-fin');if(!el)return;const tot=S.accounts.reduce((s,a)=>s+a.balance,0);const sav=S.accounts.filter(a=>a.owner==='savings').reduce((s,a)=>s+a.balance,0);el.innerHTML='<div style="display:flex;gap:.5rem;margin-bottom:.6rem"><div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Total</div><div style="font-family:Cormorant Garamond,serif;font-size:20px;color:var(--accent);font-weight:600">$'+tot.toLocaleString()+'</div></div><div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Savings</div><div style="font-family:Cormorant Garamond,serif;font-size:20px;color:var(--sage);font-weight:600">$'+sav.toLocaleString()+'</div></div></div>'+S.accounts.map(a=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--bg2)"><span style="font-size:11px">'+a.name+'</span><div style="display:flex;align-items:center;gap:.4rem"><span style="font-size:12px;font-weight:600;color:var(--accent)">$'+a.balance.toLocaleString()+'</span><button onclick="editAcctBalance('+a.id+')" style="font-size:9px;background:var(--bg2);border:none;border-radius:4px;padding:1px 5px;cursor:pointer">✏️</button></div></div>').join('')+'<div style="font-size:10px;color:var(--text3);text-align:center;margin-top:.3rem">'+S.accounts.length+' accounts · tap ✏️ to edit</div>';}
 
 function rHPil(){const el=document.getElementById('h-pil');el.innerHTML=PILLARS.map(p=>{const c=S.tasks.filter(t=>!t.done&&(t.pillar===p.name||t.pillar.toLowerCase().includes(p.id.toLowerCase()))).length;return`<div style="background:var(--bg3);border-radius:8px;padding:.5rem;text-align:center;cursor:pointer" onclick="nTP('${p.id}')"><div style="font-size:16px">${p.icon}</div><div style="font-size:10px;font-weight:500;line-height:1.3;color:var(--text)">${p.name.split(' ').slice(0,2).join(' ')}</div><div style="font-size:10px;color:var(--text3)">${c} task${c!==1?'s':''}</div></div>`;}).join('');}
 
@@ -1760,8 +1985,10 @@ function rTL(f='all'){
   if(f==='high')tasks=tasks.filter(t=>t.priority==='high');else if(f==='med')tasks=tasks.filter(t=>t.priority==='med');else if(f==='low')tasks=tasks.filter(t=>t.priority==='low');
   tasks.sort((a,b)=>{const p={high:0,med:1,low:2};if(a.done!==b.done)return a.done?1:-1;return p[a.priority]-p[b.priority];});
   if(!tasks.length){el.innerHTML='<div class="es">No tasks here yet.</div>';return;}
-  el.innerHTML=tasks.map(t=>`<div class="task-item"><div class="tcb ${t.done?'done':''}" onclick="tgT(${t.id},'tasks')" role="button" aria-label="Toggle"></div><div style="flex:1"><div class="tt ${t.done?'done':''}">${t.text}</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag tg-${t.priority}">${t.priority==='high'?'High':t.priority==='med'?'Med':'Low'}</span><span class="tag tg-p">${t.pillar}</span>${t.date?`<span class="tag tg-d">${t.date}</span>`:''}</div></div><button onclick="delT(${t.id})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:.2rem" aria-label="Delete">×</button></div>`).join('');
+  el.innerHTML=tasks.map(t=>'<div class="task-item"><div class="tcb '+(t.done?'done':'')+' " onclick="tgT('+t.id+',\'tasks\')" role="button" aria-label="Toggle"></div><div style="flex:1" id="edit-t'+t.id+'"><div class="tt '+(t.done?'done':'')+'">'+(t.text)+'</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag tg-'+t.priority+'">'+(t.priority==='high'?'High':t.priority==='med'?'Med':'Low')+'</span><span class="tag tg-p">'+t.pillar+'</span>'+(t.date?'<span class="tag tg-d">'+t.date+'</span>':'')+'</div></div><button onclick="startInlineTaskEdit('+t.id+')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:.2rem" title="Edit">&#9998;</button><button onclick="delT('+t.id+')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:.2rem" aria-label="Delete">&#215;</button></div>').join('');
 }
+function startInlineTaskEdit(id){const t=S.tasks.find(x=>x.id===id);if(!t)return;const el=document.getElementById('edit-t'+id);if(!el)return;el.innerHTML='<input class="ai" id="eit'+id+'" value="'+t.text.replace(/"/g,'&quot;')+'" style="flex:1;font-size:12px"><input class="ai" id="eitd'+id+'" type="date" value="'+(t.date||'')+'" style="max-width:130px"><button onclick="saveInlineTask('+id+')" style="background:var(--accent);border:none;border-radius:5px;padding:.25rem .5rem;color:#fff;font-size:10px;cursor:pointer">&#10003;</button><button onclick="rTL(cF)" style="background:var(--bg2);border:none;border-radius:5px;padding:.25rem .4rem;font-size:10px;cursor:pointer">&#10005;</button>';el.querySelector('input').focus();}
+function saveInlineTask(id){const t=S.tasks.find(x=>x.id===id);if(!t)return;const ni=document.getElementById('eit'+id);const nd=document.getElementById('eitd'+id);if(ni&&ni.value.trim())t.text=ni.value.trim();if(nd)t.date=nd.value||t.date;sv();rTL(cF);rHP();}
 function tgT(id,ctx){const t=S.tasks.find(t=>t.id===id);if(!t)return;t.done=!t.done;if(t.done)spawnC();sv();if(ctx==='home'){rHP();uStats();}else{rTL(cF);rHP();uStats();}}
 function delT(id){S.tasks=S.tasks.filter(t=>t.id!==id);sv();rTL(cF);rHP();rHPil();uStats();}
 
@@ -1778,7 +2005,7 @@ function rFaithHabits(){
 }
 
 function sfn(k,v){S.faithNotes[k]=v;sv();}
-function saveFBR(){S.faithNotes.book=document.getElementById('f-bk').value;S.faithNotes.study=document.getElementById('f-st').value;S.faithNotes.readnotes=document.getElementById('f-rn').value;sv();}
+function saveFBR(){if(document.getElementById('f-bk'))S.faithNotes.book=document.getElementById('f-bk').value;if(document.getElementById('f-st'))S.faithNotes.study=document.getElementById('f-st').value;if(document.getElementById('f-rn'))S.faithNotes.readnotes=document.getElementById('f-rn').value;sv();const b=document.querySelector('[onclick="saveFBR()"]');if(b){b.textContent='✓ Saved';setTimeout(()=>b.textContent='Save',1500);}}
 function ldFN(){const fn=S.faithNotes;const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};s('f-wd',fn.word);s('f-se',fn.sense);s('f-vs',fn.verse);s('pj',fn.pjournal);s('se-nt',fn.sernotes);s('f-bk',fn.book);s('f-st',fn.study);s('f-rn',fn.readnotes);}
 function rPrl(){const el=document.getElementById('prl');if(!S.prayers.length){el.innerHTML='<div class="es">No prayer requests yet.</div>';return;}el.innerHTML=S.prayers.map(p=>`<div style="padding:.5rem 0;border-bottom:1px solid var(--bg2)"><div style="display:flex;align-items:flex-start;gap:.5rem"><div class="pcb ${p.prayed?'done':''}" onclick="tgPr(${p.id})" role="button" aria-label="Toggle"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">${p.name}</div><div style="font-size:12px;color:var(--text3);margin-top:.1rem">${p.note}</div><span class="tag tg-d" style="margin-top:.2rem">${p.type}</span></div><button onclick="delPr(${p.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');}
 function tgPr(id){const p=S.prayers.find(p=>p.id===id);if(!p)return;p.prayed=!p.prayed;if(p.prayed)spawnC();sv();rPrl();}
@@ -1800,7 +2027,9 @@ function rMOv(){
   const ag=document.getElementById('m-ag');if(ag){const ac=S.mGoals.filter(g=>!g.done).slice(0,3);ag.innerHTML=ac.length?ac.map(g=>`<div class="task-item"><div class="tcb ${g.done?'done':''}" onclick="tgMG(${g.id})" role="button" style="border-color:var(--marriage-accent)"></div><div><div class="tt">${g.text}</div><span class="tag" style="background:var(--marriage-bg);color:#a04060;margin-top:.2rem">${g.cat}</span></div></div>`).join(''):'<div class="es">No active goals.</div>';}
 }
 function smn(k,v){S.mNotes[k]=v;sv();}
-function rDNl(){const el=document.getElementById('dnl');const sc={done:'var(--sage)',planned:'var(--faith-accent)',idea:'var(--gold)'};el.innerHTML=[...S.dateNights].sort((a,b)=>b.date.localeCompare(a.date)).map(d=>`<div class="dnc" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--marriage-accent)">${d.title}</div><div style="font-size:11px;color:#a04060;margin-top:.2rem">${d.date}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[d.status]};color:#fff">${d.status}</span><button onclick="delDN(${d.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');const di=document.getElementById('dn-id');if(di)di.value=S.mNotes.dnideas||'';}
+function rDNl(){const el=document.getElementById('dnl');const sc={done:'var(--sage)',planned:'var(--faith-accent)',idea:'var(--gold)'};el.innerHTML=[...S.dateNights].sort((a,b)=>b.date.localeCompare(a.date)).map(d=>'<div class="dnc" id="edit-dn'+d.id+'" style="display:flex;justify-content:space-between;align-items:flex-start"><div style="flex:1"><div style="font-family:Cormorant Garamond,serif;font-size:15px;font-weight:600;color:var(--marriage-accent)">'+d.title+'</div><div style="font-size:11px;color:#a04060;margin-top:.2rem">'+d.date+'</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:'+sc[d.status]+';color:#fff">'+d.status+'</span><button onclick="startEditDN('+d.id+')" class="db" title="Edit" style="font-size:10px">&#9998;</button><button onclick="delDN('+d.id+')" class="db" aria-label="Delete">&#215;</button></div></div>').join('');const di=document.getElementById('dn-id');if(di)di.value=S.mNotes.dnideas||'';}
+function startEditDN(id){const d=S.dateNights.find(x=>x.id===id);if(!d)return;const el=document.getElementById('edit-dn'+id);if(!el)return;el.innerHTML='<div style="flex:1;display:flex;flex-direction:column;gap:.3rem"><input class="ai" id="ednt'+id+'" value="'+d.title.replace(/"/g,'&quot;')+'" style="font-size:12px"><div style="display:flex;gap:.3rem;flex-wrap:wrap"><input class="ai" id="edndt'+id+'" type="date" value="'+d.date+'" style="max-width:130px"><select class="ai" id="ednst'+id+'" style="max-width:95px"><option '+(d.status==='planned'?'selected':'')+' value="planned">planned</option><option '+(d.status==='done'?'selected':'')+' value="done">done</option><option '+(d.status==='idea'?'selected':'')+' value="idea">idea</option></select><button onclick="saveEditDN('+id+')" style="background:var(--marriage-accent);border:none;border-radius:5px;padding:.25rem .5rem;color:#fff;font-size:10px;cursor:pointer">&#10003;</button><button onclick="rDNl()" style="background:var(--bg2);border:none;border-radius:5px;padding:.25rem .4rem;font-size:10px;cursor:pointer">&#10005;</button></div></div>';}
+function saveEditDN(id){const d=S.dateNights.find(x=>x.id===id);if(!d)return;const ti=document.getElementById('ednt'+id);const dt=document.getElementById('edndt'+id);const st=document.getElementById('ednst'+id);if(ti&&ti.value.trim())d.title=ti.value.trim();if(dt&&dt.value)d.date=dt.value;if(st)d.status=st.value;sv();rDNl();}
 function delDN(id){S.dateNights=S.dateNights.filter(d=>d.id!==id);sv();rDNl();rMOv();}
 function addDN(){const t=document.getElementById('dn-ti').value.trim();if(!t)return;S.dateNights.push({id:S.nxt.dn++,title:t,date:document.getElementById('dn-dt').value||today(),status:document.getElementById('dn-st').value});document.getElementById('dn-ti').value='';document.getElementById('dn-dt').value='';sv();rDNl();rMOv();}
 let mgTab='annual';
@@ -1817,9 +2046,12 @@ function rMGl(){
     const el=document.getElementById('mgl-'+type);if(!el)return;
     const goals=S.mGoals.filter(g=>(g.type||'annual')===type);
     if(!goals.length){el.innerHTML='<div class="es">No '+type+' goals yet.</div>';return;}
-    el.innerHTML=goals.map(g=>`<div class="task-item"><div class="tcb ${g.done?'done':''}" onclick="tgMG(${g.id})" role="button" style="border-color:var(--marriage-accent)"></div><div style="flex:1"><div class="tt ${g.done?'done':''}">${g.text}</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag" style="background:var(--marriage-bg);color:#a04060">${g.cat}</span>${g.date?`<span class="tag tg-d">${g.date}</span>`:''}</div></div><button onclick="delMG(${g.id})" class="db">×</button></div>`).join('');
+    el.innerHTML=goals.map(g=>'<div class="task-item" id="edit-mg'+g.id+'"><div class="tcb '+(g.done?'done':'')+' " onclick="tgMG('+g.id+')" role="button" style="border-color:var(--marriage-accent)"></div><div style="flex:1"><div class="tt '+(g.done?'done':'')+'">'+(g.text)+'</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag" style="background:var(--marriage-bg);color:#a04060">'+g.cat+'</span>'+(g.date?'<span class="tag tg-d">'+g.date+'</span>':'')+'</div></div><button onclick="startEditMG('+g.id+')" class="db" style="margin-right:.15rem;font-size:10px">✏️</button><button onclick="delMG('+g.id+')" class="db">&#215;</button></div>').join('');
   });
+  rMOv();
 }
+function startEditMG(id){const g=S.mGoals.find(x=>x.id===id);if(!g)return;const el=document.getElementById('edit-mg'+id);if(!el)return;el.innerHTML='<div class="tcb" style="border-color:var(--marriage-accent);flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:.3rem"><input class="ai" id="emgt'+id+'" value="'+g.text.replace(/"/g,'&quot;')+'" style="font-size:12px"><div style="display:flex;gap:.3rem"><input class="ai" id="emgd'+id+'" type="date" value="'+(g.date||'')+'" style="max-width:130px"><button onclick="saveEditMG('+id+')" style="background:var(--marriage-accent);border:none;border-radius:5px;padding:.25rem .5rem;color:#fff;font-size:10px;cursor:pointer">&#10003;</button><button onclick="rMGl()" style="background:var(--bg2);border:none;border-radius:5px;padding:.25rem .4rem;font-size:10px;cursor:pointer">&#10005;</button></div></div>';}
+function saveEditMG(id){const g=S.mGoals.find(x=>x.id===id);if(!g)return;const ti=document.getElementById('emgt'+id);const dt=document.getElementById('emgd'+id);if(ti&&ti.value.trim())g.text=ti.value.trim();if(dt&&dt.value)g.date=dt.value;sv();rMGl();}
 function addMG(){
   const t=document.getElementById('mg-t').value.trim();if(!t)return;
   S.mGoals.push({id:S.nxt.mg++,text:t,cat:document.getElementById('mg-c').value,date:document.getElementById('mg-d').value,done:false,type:document.getElementById('mg-type').value});
@@ -1842,7 +2074,7 @@ function rHOv(){
   document.getElementById('h-mp').textContent=S.meals.length;
   document.getElementById('h-dp').textContent=S.dRooms.length;
   const mp=document.getElementById('h-mlp');if(mp)mp.innerHTML=S.meals.slice(0,3).map(m=>`<div class="mc"><div style="font-size:11px;font-weight:500;color:var(--home-accent);text-transform:uppercase;letter-spacing:.06em">${m.day} · ${m.type}</div><div style="font-size:13px;color:var(--text);margin-top:.2rem">${m.text}</div></div>`).join('')+(S.meals.length>3?`<div style="font-size:11px;color:var(--text3);text-align:center;padding:.3rem">+${S.meals.length-3} more</div>`:'');
-  const cp=document.getElementById('h-clp');if(cp)cp.innerHTML=S.cleanTasks.filter(c=>!c.done&&c.freq!=='monthly').slice(0,4).map(c=>`<div class="ir"><div class="tcb scb ${c.done?'done':''}" style="border-color:var(--home-accent)" onclick="tgCl(${c.id})" role="button" aria-label="Toggle"></div><div style="font-size:13px">${c.text}<span class="tag tg-d" style="margin-left:.4rem">${c.freq}</span></div></div>`).join('');
+  const cp=document.getElementById('h-clp');if(cp)cp.innerHTML=S.cleanTasks.map(c=>'<div class="ir"><div class="tcb scb '+(c.done?'done':'')+' " style="border-color:var(--home-accent)" onclick="tgCl('+c.id+');rHOv()" role="button" aria-label="Toggle"></div><div style="font-size:13px;'+(c.done?'text-decoration:line-through;color:var(--text3)':'')+'">'+c.text+'<span class="tag tg-d" style="margin-left:.4rem">'+c.freq+'</span></div></div>').join('');
   const dp=document.getElementById('h-dsp');if(dp)dp.innerHTML=S.dRooms.map(r=>`<div class="rc"><div style="font-size:13px;font-weight:500;color:var(--home-accent)">${r.name}</div><div style="font-size:11px;color:var(--text3);margin-top:.1rem">${r.status} · ${r.priority}</div></div>`).join('');
 }
 function rMpl(){const el=document.getElementById('mpl');el.innerHTML=S.meals.map(m=>`<div class="mc" style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:11px;font-weight:500;color:var(--home-accent);text-transform:uppercase;letter-spacing:.06em">${m.day} · ${m.type}</div><div style="font-size:13px">${m.text}</div></div><button onclick="delMl(${m.id})" class="db" aria-label="Delete">×</button></div>`).join('');}
@@ -1869,6 +2101,7 @@ function ldCN(){const s=(id,v)=>{const el=document.getElementById(id);if(el)el.v
 function rCOv(){
   document.getElementById('c-ev').textContent=S.hillEvents.filter(e=>e.status!=='done').length;
   document.getElementById('c-mb').textContent=S.hillMembers.length;
+  const evEl=document.getElementById('c-upcoming-events');if(evEl){const up=S.hillEvents.filter(e=>e.status!=='done').sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);evEl.innerHTML=up.length?up.map(e=>'<div style="padding:.3rem 0;border-bottom:1px solid var(--bg2)"><div style="font-size:12px;font-weight:500;color:var(--cult-accent)">'+e.title+'</div><div style="font-size:10px;color:var(--text3)">'+e.date+(e.venue?' · '+e.venue:'')+' · <span style="color:var(--sage)">'+e.status+'</span></div></div>').join(''):'<div class="es">No upcoming events.</div>';}
   document.getElementById('c-et').textContent=S.elderTasks.filter(t=>!t.done).length;
   const cv=document.getElementById('c-vis');if(cv)cv.value=S.cNotes.vision||'';
   const ne=document.getElementById('c-nev');if(ne)ne.innerHTML=S.hillEvents.filter(e=>e.status!=='done').slice(0,3).map(e=>`<div class="ec"><div style="font-size:13px;font-weight:500;color:var(--cult-accent)">${e.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${e.date} · ${e.venue}</div></div>`).join('')||'<div class="es">No upcoming events.</div>';
@@ -1896,7 +2129,7 @@ function addCN(){const b=document.getElementById('cn-bd').value.trim();if(!b)ret
 
 function swn(k,v){S.wNotes[k]=v;sv();}
 function ldWN(){const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};s('w-int',S.wNotes.intention);s('ft-nt',S.wNotes.fitnessnotes);s('nu-ai',S.wNotes.antinf);s('nu-ry',S.wNotes.raynotes);s('nu-nt',S.wNotes.nutritionnotes);s('pg-jn',S.wNotes.growthjournal);}
-function saveNutrition(){S.wNotes.antinf=document.getElementById('nu-ai').value;S.wNotes.raynotes=document.getElementById('nu-ry').value;sv();}
+function saveNutrition(){if(document.getElementById('nu-ai'))S.wNotes.antinf=document.getElementById('nu-ai').value;if(document.getElementById('nu-ry'))S.wNotes.raynotes=document.getElementById('nu-ry').value;sv();const b=document.querySelector('[onclick="saveNutrition()"]');if(b){b.textContent='✓ Saved';setTimeout(()=>b.textContent='Save',1500);}}
 function rWOv(){
   const wd=gwd().map(d=>toDS(d));
   document.getElementById('w-wo').textContent=S.workouts.filter(w=>wd.includes(w.date)).length;
@@ -1921,13 +2154,13 @@ function addBook(){const t=document.getElementById('bk-ti').value.trim();if(!t)r
 
 function ssn(k,v){S.salNotes[k]=v;sv();}
 function ldSN(){const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};s('s-mis',S.salNotes.mission);s('co-id',S.salNotes.contentideas);s('gs-nt',S.salNotes.coachingnotes);s('sp-nt',S.salNotes.speakingnotes);s('br-vo',S.salNotes.brandvoice);s('br-au',S.salNotes.audience);}
-function saveBrand(){S.salNotes.brandvoice=document.getElementById('br-vo').value;S.salNotes.audience=document.getElementById('br-au').value;sv();}
+function saveBrand(){if(document.getElementById('br-vo'))S.salNotes.brandvoice=document.getElementById('br-vo').value;if(document.getElementById('br-au'))S.salNotes.audience=document.getElementById('br-au').value;sv();const b=document.querySelector('[onclick="saveBrand()"]');if(b){b.textContent='✓ Saved';setTimeout(()=>b.textContent='Save',1500);}}
 function rSOv(){
   document.getElementById('s-co').textContent=S.content.filter(c=>c.status==='ready'||c.status==='draft').length;
   document.getElementById('s-cl').textContent=S.clients.filter(c=>c.status==='active').length;
   document.getElementById('s-sp').textContent=S.speaking.filter(s=>s.status==='upcoming'||s.status==='confirmed').length;
   const mi=document.getElementById('s-mis');if(mi)mi.value=S.salNotes.mission||'';
-  const nc=document.getElementById('s-nco');if(nc)nc.innerHTML=S.content.filter(c=>c.status!=='posted').slice(0,3).map(c=>`<div class="sc2"><div style="font-size:13px;font-weight:500;color:var(--sal-accent)">${c.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${c.platform} · ${c.type} · ${c.date}</div></div>`).join('')||'<div class="es">No content scheduled.</div>';
+  const nc=document.getElementById('s-nco');if(nc)nc.innerHTML=[...S.content].filter(c=>c.status!=='posted').sort((a,b)=>(a.date||'').localeCompare(b.date||'')).slice(0,3).map(c=>'<div class="sc2"><div style="font-size:13px;font-weight:500;color:var(--sal-accent)">'+c.title+'</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">'+c.platform+' · '+c.type+(c.date?' · '+c.date:'')+'</div></div>').join('')||'<div class="es">No content scheduled.</div>';
   const ac=document.getElementById('s-acl');if(ac)ac.innerHTML=S.clients.filter(c=>c.status==='active').map(c=>`<div class="sc2"><div style="font-size:13px;font-weight:500;color:var(--sal-accent)">${c.name}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${c.session}</div></div>`).join('')||'<div class="es">No active clients yet.</div>';
 }
 function rCoCal(){const el=document.getElementById('co-cal');if(!S.content.length){el.innerHTML='<div class="es">No content planned yet.</div>';return;}const sc={idea:'var(--bg3)',draft:'var(--gold)',ready:'var(--well-accent)',posted:'var(--sage)'};const tc={idea:'var(--text3)',draft:'#633806',ready:'#fff',posted:'#fff'};el.innerHTML=[...S.content].sort((a,b)=>a.date.localeCompare(b.date)).map(c=>`<div class="sc2" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:13px;font-weight:500;color:var(--sal-accent)">${c.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${c.platform} · ${c.type} · ${c.date}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[c.status]};color:${tc[c.status]}">${c.status}</span><button onclick="delCo(${c.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');}
@@ -1958,9 +2191,7 @@ function rPNOv(){
 function rPNClients(){const el=document.getElementById('pn-clients');if(!S.pnClients.length){el.innerHTML='<div class="es">No clients yet.</div>';return;}const sc={inquiry:'var(--gold)',booked:'var(--pneuma-accent)',active:'var(--cult-accent)',done:'var(--sage)'};el.innerHTML=S.pnClients.map(c=>`<div class="pnc" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:13px;font-weight:500;color:var(--pneuma-accent)">${c.name}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${c.type} · ${c.notes||''}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[c.status]};color:#fff">${c.status}</span><button onclick="delPnCl(${c.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');}
 function delPnCl(id){S.pnClients=S.pnClients.filter(c=>c.id!==id);sv();rPNClients();rPNOv();}
 function addPnClient(){const n=document.getElementById('pn-cnm').value.trim();if(!n)return;S.pnClients.push({id:S.nxt.pncl++,name:n,type:document.getElementById('pn-cty').value,status:document.getElementById('pn-cst').value,notes:document.getElementById('pn-cnt').value});document.getElementById('pn-cnm').value='';document.getElementById('pn-cnt').value='';sv();rPNClients();rPNOv();}
-function rPNShoots(){const el=document.getElementById('pn-shoots');if(!S.pnShoots.length){el.innerHTML='<div class="es">No shoots scheduled yet.</div>';return;}const sc={upcoming:'var(--pneuma-accent)',done:'var(--sage)',cancelled:'var(--text3)'};el.innerHTML=[...S.pnShoots].sort((a,b)=>a.date.localeCompare(b.date)).map(s=>`<div class="pnec" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:13px;font-weight:500;color:var(--pneuma-accent)">${s.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${s.date} · ${s.location}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[s.status]};color:#fff">${s.status}</span><button onclick="delShoot(${s.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');}
 function delShoot(id){S.pnShoots=S.pnShoots.filter(s=>s.id!==id);sv();rPNShoots();rPNOv();}
-function addShoot(){const t=document.getElementById('pn-sti').value.trim();if(!t)return;S.pnShoots.push({id:S.nxt.pnsh++,title:t,date:document.getElementById('pn-sdt').value||today(),location:document.getElementById('pn-slc').value||'TBD',status:document.getElementById('pn-sst').value});document.getElementById('pn-sti').value='';document.getElementById('pn-sdt').value='';document.getElementById('pn-slc').value='';sv();rPNShoots();rPNOv();}
 function rPNRev(){
   const invoiced=S.pnRevenue.filter(r=>r.status==='invoiced').reduce((s,r)=>s+r.amount,0);
   const paid=S.pnRevenue.filter(r=>r.status==='paid').reduce((s,r)=>s+r.amount,0);
@@ -1984,7 +2215,7 @@ function addPnNote(){const b=document.getElementById('pn-nbd').value.trim();if(!
 // ===== SIMPSONS BRAND FUNCTIONS =====
 function ssmn(k,v){S.smNotes[k]=v;sv();}
 function ldSM(){const s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};s('sm-mis',S.smNotes.mission);s('sm-coid',S.smNotes.contentideas);s('sm-podnt',S.smNotes.podnotes);s('sm-pillars',S.smNotes.pillars);s('sm-ray',S.smNotes.rayonboarding);}
-function saveVision(){S.smNotes.pillars=document.getElementById('sm-pillars').value;S.smNotes.rayonboarding=document.getElementById('sm-ray').value;sv();}
+function saveVision(){if(document.getElementById('sm-pillars'))S.smNotes.pillars=document.getElementById('sm-pillars').value;if(document.getElementById('sm-ray'))S.smNotes.rayonboarding=document.getElementById('sm-ray').value;sv();const b=document.querySelector('[onclick="saveVision()"]');if(b){b.textContent='✓ Saved';setTimeout(()=>b.textContent='Save',1500);}}
 function rSMOv(){
   document.getElementById('sm-co').textContent=S.smContent.filter(c=>c.status!=='posted').length;
   document.getElementById('sm-pod').textContent=S.smEpisodes.filter(e=>e.status==='live').length;
@@ -1995,7 +2226,6 @@ function rSMOv(){
 }
 function rSMContent(){const el=document.getElementById('sm-cocal');if(!S.smContent.length){el.innerHTML='<div class="es">No content planned yet.</div>';return;}const sc={idea:'var(--bg3)',filming:'var(--gold)',editing:'var(--well-accent)',ready:'var(--pneuma-accent)',posted:'var(--sage)'};const tc={idea:'var(--text3)',filming:'#633806',editing:'#fff',ready:'#fff',posted:'#fff'};el.innerHTML=S.smContent.map(c=>`<div class="simc" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:13px;font-weight:500;color:var(--simpsons-accent)">${c.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${c.platform} · ${c.type}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[c.status]};color:${tc[c.status]}">${c.status}</span><button onclick="delSmCo(${c.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');}
 function delSmCo(id){S.smContent=S.smContent.filter(c=>c.id!==id);sv();rSMContent();rSMOv();}
-function addSmContent(){const t=document.getElementById('sm-coti').value.trim();if(!t)return;S.smContent.push({id:S.nxt.smco++,title:t,platform:document.getElementById('sm-copl').value,type:document.getElementById('sm-coty').value,status:document.getElementById('sm-cost').value});document.getElementById('sm-coti').value='';sv();rSMContent();rSMOv();}
 function rSMEpisodes(){const el=document.getElementById('sm-episodes');if(!S.smEpisodes.length){el.innerHTML='<div class="es">No episodes yet. The first one is brewing 🎙️</div>';return;}const sc={idea:'var(--bg3)',recording:'var(--gold)',editing:'var(--well-accent)',live:'var(--sage)'};const tc={idea:'var(--text3)',recording:'#633806',editing:'#fff',live:'#fff'};el.innerHTML=[...S.smEpisodes].sort((a,b)=>b.epNo-a.epNo).map(e=>`<div class="simec" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:13px;font-weight:500;color:var(--simpsons-accent)">Ep ${e.epNo}: ${e.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${e.date}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[e.status]};color:${tc[e.status]}">${e.status}</span><button onclick="delEp(${e.id})" class="db" aria-label="Delete">×</button></div></div>`).join('');}
 function delEp(id){S.smEpisodes=S.smEpisodes.filter(e=>e.id!==id);sv();rSMEpisodes();rSMOv();}
 function addEpisode(){const t=document.getElementById('sm-epti').value.trim();if(!t)return;S.smEpisodes.push({id:S.nxt.smep++,title:t,epNo:parseInt(document.getElementById('sm-epno').value)||S.smEpisodes.length+1,date:document.getElementById('sm-epdt').value||today(),status:document.getElementById('sm-epst').value});document.getElementById('sm-epti').value='';document.getElementById('sm-epno').value='';document.getElementById('sm-epdt').value='';sv();rSMEpisodes();rSMOv();}
@@ -2009,7 +2239,10 @@ function rAccts(){['sal','ray','joint','savings'].forEach(o=>{const el=document.
 function addAcct(){const n=document.getElementById('na-n').value.trim();if(!n)return;S.accounts.push({id:S.nxt.acct++,name:n,owner:document.getElementById('na-o').value,balance:parseFloat(document.getElementById('na-b').value)||0,type:'checking'});document.getElementById('na-n').value='';document.getElementById('na-b').value='';sv();rAccts();rHF();uTxnDD();}
 function rBudget(){const pp=S.activePP;const cats=S.bCats.filter(c=>c.period==='both'||c.period===pp);const tb=cats.reduce((s,c)=>s+c.budget,0);const ts=cats.reduce((s,c)=>s+c.spent,0);const pct=tb>0?Math.round(ts/tb*100):0;document.getElementById('bsum').innerHTML=`<div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Budgeted</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">$${tb.toLocaleString()}</div></div><div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Spent</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:${pct>90?'#a03030':'var(--accent)'}">${ts.toLocaleString()}</div></div><div style="flex:1;background:var(--bg3);border-radius:8px;padding:.6rem;text-align:center"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Remaining</div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--sage)">$${(tb-ts).toLocaleString()}</div></div>`;document.getElementById('bcats').innerHTML=cats.map(c=>{const p=c.budget>0?Math.round(c.spent/c.budget*100):0;return`<div style="padding:.5rem 0;border-bottom:1px solid var(--bg2)"><div style="display:flex;justify-content:space-between;margin-bottom:.2rem"><span style="font-size:12px">${c.name}</span><span style="font-size:12px;font-weight:500;color:${p>100?'#a03030':'var(--text)'}">$${c.spent}/$${c.budget}</span></div><div class="pb"><div class="pf" style="width:${Math.min(p,100)}%;background:${p>100?'#d45050':p>80?'#d4904a':'var(--sage)'}"></div></div></div>`;}).join('');}
 function addBCat(){const n=document.getElementById('nc-n').value.trim();if(!n)return;S.bCats.push({id:S.nxt.bcat++,name:n,budget:parseFloat(document.getElementById('nc-b').value)||0,spent:parseFloat(document.getElementById('nc-s').value)||0,period:document.getElementById('nc-pp').value});document.getElementById('nc-n').value='';document.getElementById('nc-b').value='';document.getElementById('nc-s').value='';sv();rBudget();}
-function rFGL(){document.getElementById('fgl').innerHTML=S.fGoals.map(g=>{const p=g.target>0?Math.round(g.current/g.target*100):0;return`<div style="padding:.6rem 0;border-bottom:1px solid var(--bg2)"><div style="display:flex;justify-content:space-between;margin-bottom:.25rem"><span style="font-size:13px;font-weight:500">${g.name}</span><span style="font-size:12px;color:var(--text3)">${p}%</span></div><div class="pb"><div class="pf" style="width:${Math.min(p,100)}%;background:var(--gold)"></div></div><div style="font-size:11px;color:var(--text3);margin-top:.2rem">$${g.current.toLocaleString()} of $${g.target.toLocaleString()}</div></div>`;}).join('');}
+function rFGL(){const el=document.getElementById('fgl');if(!el)return;if(!S.fGoals.length){el.innerHTML='<div class="es">No goals yet.</div>';return;}el.innerHTML=S.fGoals.map(g=>{const isBudget=g.target>0;const p=isBudget?Math.round(g.current/g.target*100):0;return'<div style="padding:.6rem 0;border-bottom:1px solid var(--bg2)" id="edit-fg'+g.id+'"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.25rem"><span style="font-size:13px;font-weight:500;flex:1">'+g.name+'</span><div style="display:flex;gap:.3rem;align-items:center">'+(isBudget?'<span style="font-size:11px;color:var(--text3)">'+p+'%</span>':'')+'<button onclick="startEditFG('+g.id+')" class="db" title="Edit" style="font-size:10px">✏️</button><button onclick="delFGoal('+g.id+')" class="db" title="Delete">×</button></div></div>'+(isBudget?'<div class="pb"><div class="pf" style="width:'+Math.min(p,100)+'%;background:var(--gold)"></div></div><div style="font-size:11px;color:var(--text3);margin-top:.2rem">$'+g.current.toLocaleString()+' of $'+g.target.toLocaleString()+'</div>':'<div style="font-size:11px;color:var(--sage);margin-top:.1rem">Qualitative goal</div>')+'</div>';}).join('');}
+function startEditFG(id){const g=S.fGoals.find(x=>x.id===id);if(!g)return;const el=document.getElementById('edit-fg'+id);if(!el)return;el.innerHTML='<div style="display:flex;flex-direction:column;gap:.3rem"><input class="ai" id="efgn'+id+'" value="'+g.name.replace(/"/g,'&quot;')+'" placeholder="Goal name..." style="font-size:12px"><div style="display:flex;gap:.3rem;flex-wrap:wrap"><input class="ai" id="efgt'+id+'" type="number" value="'+(g.target||'')+'" placeholder="Target $" style="max-width:90px"><input class="ai" id="efgc'+id+'" type="number" value="'+(g.current||'')+'" placeholder="Current $" style="max-width:90px"><button onclick="saveEditFG('+id+')" style="background:var(--gold);border:none;border-radius:5px;padding:.25rem .5rem;color:#fff;font-size:10px;cursor:pointer">&#10003;</button><button onclick="rFGL()" style="background:var(--bg2);border:none;border-radius:5px;padding:.25rem .4rem;font-size:10px;cursor:pointer">&#10005;</button></div></div>';}
+function saveEditFG(id){const g=S.fGoals.find(x=>x.id===id);if(!g)return;const n=document.getElementById('efgn'+id);const t=document.getElementById('efgt'+id);const c=document.getElementById('efgc'+id);if(n)g.name=n.value.trim()||g.name;if(t&&t.value)g.target=parseFloat(t.value);if(c&&c.value)g.current=parseFloat(c.value);sv();rFGL();}
+function delFGoal(id){if(!confirm('Delete this goal?'))return;S.fGoals=S.fGoals.filter(g=>g.id!==id);sv();rFGL();}
 function addFGoal(){const n=document.getElementById('ng-n').value.trim();if(!n)return;S.fGoals.push({id:S.nxt.fgoal++,name:n,target:parseFloat(document.getElementById('ng-t').value)||0,current:parseFloat(document.getElementById('ng-c').value)||0});document.getElementById('ng-n').value='';document.getElementById('ng-t').value='';document.getElementById('ng-c').value='';sv();rFGL();}
 function uTxnDD(){const opts=S.accounts.map(a=>`<option>${a.name}</option>`).join('');const na=document.getElementById('nt-ac');if(na)na.innerHTML=opts;const af=document.getElementById('taf');if(af)af.innerHTML='<option value="all">All accounts</option>'+opts;}
 function rTxns(){const el=document.getElementById('txnl');const f=document.getElementById('taf').value;let tx=[...S.txns];if(f!=='all')tx=tx.filter(t=>t.account===f);tx.sort((a,b)=>b.date.localeCompare(a.date));if(!tx.length){el.innerHTML='<div class="es">No transactions yet.</div>';return;}el.innerHTML=tx.map(t=>`<div class="tr"><div><div style="font-size:13px">${t.desc}</div><div style="font-size:10px;color:var(--text3)">${t.account} · ${t.date}</div></div><div class="${t.type==='credit'?'tpos':'tneg'}">${t.type==='credit'?'+':'-'}$${t.amount.toLocaleString()}</div></div>`).join('');}
@@ -2023,7 +2256,7 @@ function nW(d){wkOff+=d;bCW(wkOff);}function nM(d){mnOff+=d;bCM(mnOff);}
 
 function rPG(){const el=document.getElementById('pgrid');el.innerHTML=PILLARS.map(p=>{const c=S.tasks.filter(t=>!t.done&&(t.pillar===p.name||t.pillar.toLowerCase().includes(p.id.toLowerCase()))).length;const has=!!p.view;return`<div style="background:#fff;border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s" onclick="${has?`nTP('${p.id}')`:``}"><div style="font-size:22px;margin-bottom:.35rem">${p.icon}</div><div style="font-size:11px;font-weight:500;color:var(--text);line-height:1.3">${p.name}</div><div style="font-size:10px;color:var(--text3);margin-top:.2rem">${c} active task${c!==1?'s':''}</div><div style="font-size:10px;color:${has?'var(--accent)':'var(--border)'};margin-top:.3rem">${has?'Open pillar →':''}</div></div>`;}).join('');}
 
-async function runBD(){const input=document.getElementById('bdi').value.trim();if(!input)return;const btn=document.getElementById('bdb');btn.disabled=true;btn.textContent='Thinking...';document.getElementById('bdr').innerHTML='<div class="air" style="color:var(--text3);font-style:italic">Sorting your thoughts...</div>';try{const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`You are helping Sal, a Christian woman in Dallas TX. Her 9 life pillars: Faith & Spiritual Life, Marriage, Finances, Home, Pneuma & Co. (photography studio with Ray), Signed Sally S (personal brand/ministry/Good Steward coaching), Love, the Simpsons (couples brand with Ray — podcast, couples content, merch), Cultivate (church ministry/elder training/The Hill young adults 18-35), Wellness & Personal Growth.\n\nBrain dump: "${input}"\n\nRespond ONLY with a JSON array, no preamble, no backticks. Each: {"task":"task text","pillar":"pillar name","priority":"high|med|low","timeframe":"by end of week|within 2 weeks|within 3 weeks","note":"optional tip"}`}]})});const data=await resp.json();const items=JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());document.getElementById('bdr').innerHTML=`<div class="air"><div style="font-weight:500;margin-bottom:.6rem">✦ ${items.length} things sorted:</div>${items.map(item=>`<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:.4rem 0;border-bottom:1px solid var(--bg2);gap:.4rem"><div style="flex:1"><div style="font-size:13px;margin-bottom:.2rem">${item.task}</div><div style="display:flex;gap:.3rem;flex-wrap:wrap"><span class="tag tg-p">${item.pillar}</span><span class="tag tg-${item.priority}">${item.priority==='high'?'High':item.priority==='med'?'Med':'Low'}</span><span style="font-size:10px;color:var(--text3)">${item.timeframe}</span></div>${item.note?`<div style="font-size:10px;color:var(--text3);margin-top:.15rem;font-style:italic">${item.note}</div>`:''}</div><button class="btn-o btn-sm" onclick="addFB('${item.task.replace(/'/g,"\\'")}','${item.pillar}','${item.priority}')">+ Add</button></div>`).join('')}<div style="margin-top:.6rem"><button class="btn btn-p btn-sm" onclick='addAllBD(${JSON.stringify(items).replace(/"/g,"&quot;")})'>Add All</button></div></div>`;S.bdHistory.unshift({date:new Date().toLocaleString(),text:input.slice(0,60)+'…',count:items.length});if(S.bdHistory.length>5)S.bdHistory.pop();sv();rBDH();}catch(e){document.getElementById('bdr').innerHTML='<div class="air" style="color:#a03030">Something went wrong. Try again.</div>';}btn.disabled=false;btn.textContent='Sort & Categorize';}
+async function runBD(){const input=document.getElementById('bdi').value.trim();if(!input)return;const btn=document.getElementById('bdb');btn.disabled=true;btn.textContent='Thinking...';document.getElementById('bdr').innerHTML='<div class="air" style="color:var(--text3);font-style:italic">Sorting your thoughts...</div>';try{const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':'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'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:`You are helping Sal, a Christian woman in Dallas TX. Her 9 life pillars: Faith & Spiritual Life, Marriage, Finances, Home, Pneuma & Co. (photography studio with Ray), Signed Sally S (personal brand/ministry/Good Steward coaching), Love, the Simpsons (couples brand with Ray — podcast, couples content, merch), Cultivate (church ministry/elder training/The Hill young adults 18-35), Wellness & Personal Growth.\n\nBrain dump: "${input}"\n\nRespond ONLY with a JSON array, no preamble, no backticks. Each: {"task":"task text","pillar":"pillar name","priority":"high|med|low","timeframe":"by end of week|within 2 weeks|within 3 weeks","note":"optional tip"}`}]})});const data=await resp.json();const items=JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());document.getElementById('bdr').innerHTML=`<div class="air"><div style="font-weight:500;margin-bottom:.6rem">✦ ${items.length} things sorted:</div>${items.map(item=>`<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:.4rem 0;border-bottom:1px solid var(--bg2);gap:.4rem"><div style="flex:1"><div style="font-size:13px;margin-bottom:.2rem">${item.task}</div><div style="display:flex;gap:.3rem;flex-wrap:wrap"><span class="tag tg-p">${item.pillar}</span><span class="tag tg-${item.priority}">${item.priority==='high'?'High':item.priority==='med'?'Med':'Low'}</span><span style="font-size:10px;color:var(--text3)">${item.timeframe}</span></div>${item.note?`<div style="font-size:10px;color:var(--text3);margin-top:.15rem;font-style:italic">${item.note}</div>`:''}</div><button class="btn-o btn-sm" onclick="addFB('${item.task.replace(/'/g,"\\'")}','${item.pillar}','${item.priority}')">+ Add</button></div>`).join('')}<div style="margin-top:.6rem"><button class="btn btn-p btn-sm" onclick='addAllBD(${JSON.stringify(items).replace(/"/g,"&quot;")})'>Add All</button></div></div>`;S.bdHistory.unshift({date:new Date().toLocaleString(),text:input.slice(0,60)+'…',count:items.length});if(S.bdHistory.length>5)S.bdHistory.pop();sv();rBDH();}catch(e){document.getElementById('bdr').innerHTML='<div class="air" style="color:#a03030">Something went wrong. Try again.</div>';}btn.disabled=false;btn.textContent='Sort & Categorize';}
 function addFB(text,pillar,priority){S.tasks.push({id:S.nxt.task++,text,pillar,priority,done:false,date:today()});sv();rHP();rHPil();uStats();}
 function addAllBD(items){items.forEach(item=>S.tasks.push({id:S.nxt.task++,text:item.task,pillar:item.pillar,priority:item.priority,done:false,date:today()}));document.getElementById('bdi').value='';document.getElementById('bdr').innerHTML='<div class="air" style="color:var(--sage)">✓ All tasks added!</div>';sv();rHP();rHPil();bHW();uStats();}
 function rBDH(){const el=document.getElementById('bdh');if(!S.bdHistory.length){el.innerHTML='<div class="es">Recent brain dumps appear here.</div>';return;}el.innerHTML=S.bdHistory.map(h=>`<div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--bg2);font-size:12px"><div><div>${h.text}</div><div style="font-size:10px;color:var(--text3)">${h.date}</div></div><span style="color:var(--text3)">${h.count} items</span></div>`).join('');}
@@ -2059,15 +2292,15 @@ function navTo(view, el) {
   if(view==='tasks') rTL(cF);
   if(view==='habits') rHb();
   if(view==='finances'){rAccts();rBudget();rFGL();rTxns();uTxnDD();}
-  if(view==='calendar'){bCW(wkOff);bCM(mnOff);if(gcalConnected)fetchGCalEvents();}
+  if(view==='calendar'){bCW(wkOff);bCM(mnOff);if(gcalAccessToken)fetchGCalEvents();}
   if(view==='faith'){ldFN();rPrl();rSerl();rGNl();rFaithHabits();}
   if(view==='marriage'){rMOv();rDNl();rMGl();rStr();rMNE();}
   if(view==='homepillar'){rHOv();rMpl();rGrl();rClt();rDrl();rMtl();ldHN();}
   if(view==='cultivate'){rCOv();rHillEv();rHMem();rHCk();rETl();rCNE();ldCN();updateTCEvSelect();}
-  if(view==="wellness"){rWOv();rWOL();rDailyTracker();rPGG();rBks();ldWN();}
+  if(view==="wellness"){rWOv();rWOL();rSuppWeekly();rPGG();rBks();ldWN();}
   if(view==='signedsal'){rSOv();rCoCal();rClients();rSpkg();ldSN();bGSCal();bSSLCal();rSSLMasterTasks();}
-  if(view==='pneuma'){rPNOv();rPNClients();rPNShoots();rPNRebrand();rPNNotes();rPnContent();ldPN();bPNCal();bPNCoCalendar();}
-  if(view==='simpsons'){rSMOv();rSMContent();rSMEpisodes();rSMMerch();rSMMiles();ldSM();bSMCal();rSMMasterTasks();}
+  if(view==='pneuma'){rPNOv();rPNClients();rPNShoots();rPNRebrand();rPNNotes();rPnContent();ldPN();bPNCal();bPNCoCalendar();rPNRevWidget();}
+  if(view==='simpsons'){rSMOv();rSMContent();rSMEpisodes();rSMMerch();rSMMiles();ldSM();bSMCal();rSMMasterTasks();rSMOvGoals();}
   if(view==='pillars') rPG();
   if(view==='braindump') rBDH();
 }
@@ -2197,61 +2430,7 @@ async function fetchWeather(){
   }
 }
 
-// ===== GOOGLE CALENDAR =====
-const GCAL_CLIENT_ID='331385706690-0f84sn2a05u5rqeicqk2u0ksd83t5t63.apps.googleusercontent.com';
-const GCAL_SCOPES='https://www.googleapis.com/auth/calendar.readonly';
-let gcalTokenClient=null,gcalAccessToken=null,gcalConnected=false;
 
-function initGCal(){
-  if(typeof google==='undefined')return;
-  gcalTokenClient=google.accounts.oauth2.initTokenClient({client_id:GCAL_CLIENT_ID,scope:GCAL_SCOPES,callback:(resp)=>{if(resp.error)return;gcalAccessToken=resp.access_token;gcalConnected=true;S.gcalConnected=true;sv();updateGCalUI(true);fetchGCalEvents();}});
-}
-function connectGCal(){
-  if(GCAL_CLIENT_ID==='331385706690-0f84sn2a05u5rqeicqk2u0ksd83t5t63.apps.googleusercontent.com'){
-    const note=document.getElementById('gcal-setup-note');
-    if(note)note.innerHTML='<span style="color:var(--accent2)">⚠ To connect: create a Google Cloud project, enable Calendar API, create OAuth 2.0 Client ID, then paste it where it says YOUR_GOOGLE_CLIENT_ID_HERE in this file.</span>';
-    return;
-  }
-  if(!gcalTokenClient)initGCal();
-  gcalTokenClient.requestAccessToken({prompt:'consent'});
-}
-function disconnectGCal(){if(gcalAccessToken)google.accounts.oauth2.revoke(gcalAccessToken);gcalAccessToken=null;gcalConnected=false;S.gcalConnected=false;sv();updateGCalUI(false);}
-function updateGCalUI(connected){
-  const cb=document.getElementById('gcal-connect-btn');const db=document.getElementById('gcal-disconnect-btn');
-  const st=document.getElementById('gcal-status-text');const sn=document.getElementById('gcal-setup-note');
-  const td=document.getElementById('gcal-events-today');const up=document.getElementById('gcal-upcoming');
-  const hb=document.getElementById('gcal-home-btn');
-  if(connected){if(cb)cb.style.display='none';if(db)db.style.display='inline-block';if(st)st.textContent='Connected ✓';if(sn)sn.style.display='none';if(td)td.style.display='block';if(up)up.style.display='block';if(hb){hb.textContent='Synced ✓';hb.style.background='var(--sage-light)';hb.style.color='var(--sage)';}}
-  else{if(cb)cb.style.display='inline-block';if(db)db.style.display='none';if(st)st.textContent='Connect to see your real events';if(sn)sn.style.display='block';if(td)td.style.display='none';if(up)up.style.display='none';}
-}
-async function fetchGCalEvents(){
-  if(!gcalAccessToken)return;
-  try{
-    const now=new Date();const sevenDays=new Date(now.getTime()+7*24*60*60*1000);
-    const todayEnd=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).toISOString();
-    const params=new URLSearchParams({timeMin:now.toISOString(),timeMax:sevenDays.toISOString(),singleEvents:'true',orderBy:'startTime',maxResults:'20'});
-    const resp=await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`,{headers:{Authorization:`Bearer ${gcalAccessToken}`}});
-    if(!resp.ok){if(resp.status===401)disconnectGCal();return;}
-    const data=await resp.json();const events=data.items||[];
-    const todayEvents=events.filter(e=>{const s=e.start.dateTime||e.start.date;return s<=todayEnd;});
-    const upcoming=events.filter(e=>{const s=e.start.dateTime||e.start.date;return s>todayEnd;});
-    renderGCalEvents('gcal-today-list',todayEvents,true);
-    renderGCalEvents('gcal-upcoming-list',upcoming,false);
-    renderGCalEventsHome(todayEvents);
-  }catch(e){console.error('GCal error:',e);}
-}
-function renderGCalEvents(elId,events,isToday){
-  const el=document.getElementById(elId);if(!el)return;
-  if(!events.length){el.innerHTML=`<div style="font-size:11px;color:var(--text3);font-style:italic">${isToday?'Nothing scheduled today.':'Clear week ahead.'}</div>`;return;}
-  el.innerHTML=events.map(e=>{const startRaw=e.start.dateTime||e.start.date;const isAllDay=!e.start.dateTime;let timeStr='';if(!isAllDay){const d=new Date(startRaw);timeStr=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});}const dateStr=isAllDay?'':new Date(startRaw).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'});return`<div style="display:flex;gap:.5rem;padding:.35rem 0;border-bottom:1px solid var(--bg2);align-items:flex-start"><div style="width:3px;min-height:28px;background:var(--accent);border-radius:2px;flex-shrink:0;margin-top:2px"></div><div><div style="font-size:12px;color:var(--text);font-weight:500">${e.summary||'Event'}</div><div style="font-size:10px;color:var(--text3)">${isAllDay?'All day':timeStr}${!isToday?' · '+dateStr:''}${e.location?' · '+e.location.split(',')[0]:''}</div></div></div>`;}).join('');
-}
-function renderGCalEventsHome(events){
-  const el=document.getElementById('gcal-home-events');if(!el)return;
-  if(!events.length){el.innerHTML='<div style="font-size:11px;color:var(--text3);font-style:italic;text-align:center;padding:.5rem 0">Nothing on the calendar today.</div>';return;}
-  el.innerHTML=events.slice(0,4).map(e=>{const startRaw=e.start.dateTime||e.start.date;const isAllDay=!e.start.dateTime;const timeStr=isAllDay?'All day':new Date(startRaw).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});return`<div style="display:flex;gap:.4rem;padding:.3rem 0;border-bottom:1px solid var(--bg2);align-items:center"><div style="width:2px;height:28px;background:var(--accent);border-radius:2px;flex-shrink:0"></div><div><div style="font-size:11px;color:var(--text);font-weight:500">${e.summary||'Event'}</div><div style="font-size:9px;color:var(--text3)">${timeStr}</div></div></div>`;}).join('');
-}
-setInterval(()=>{if(gcalConnected)fetchGCalEvents();},10*60*1000);
-(function loadGIS(){const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;s.onload=()=>{initGCal();if(S&&S.gcalConnected)connectGCal();};document.head.appendChild(s);})();
 
 async function init(){try{
   await ld();
@@ -2262,7 +2441,7 @@ async function init(){try{
   if(!S.tgBucketList)S.tgBucketList=[];if(!S.nxt.tgbl)S.nxt.tgbl=1;
   if(!S.sslTasks)S.sslTasks=[];if(!S.nxt.sslTask)S.nxt.sslTask=1;
   if(!S.smTasks)S.smTasks=[];if(!S.nxt.smTask)S.nxt.smTask=1;
-  setDT();bHW();bHM(0);bHD(0);rHP();rHF();rHPil();uStats();rFB();rHMini();rHomeFocus();renderTB();fetchWeather();rHealthScores();rWeeklyWins();rEnergyCard();startClock();uTxnDD();updateTCEvSelect();const qn=document.getElementById("quick-notes");if(qn&&S.quickNotes)qn.value=S.quickNotes;const todayE=S.energyLog&&S.energyLog.find(e=>e.date===today());if(todayE&&todayE.energy)runAIFocus();const tn=document.getElementById("tg-notes-area");if(tn&&S.thatGirl)tn.value=S.thatGirl.notes||'';}catch(e){console.error("init error:",e);}
+  setDT();bHW();bHM(0);bHD(0);rHP();rHF();rHPil();uStats();rFB();rHMini();rHomeFocus();renderTB();fetchWeather();rHealthScores();rWeeklyWins();rEnergyCard();startClock();updateTCEvSelect();setTimeout(()=>{try{rSuppWeekly();rSMOvGoals();}catch(e){}},200);const qn=document.getElementById("quick-notes");if(qn&&S.quickNotes)qn.value=S.quickNotes;const todayE=S.energyLog&&S.energyLog.find(e=>e.date===today());if(todayE&&todayE.energy)runAIFocus();const tn=document.getElementById("tg-notes-area");if(tn&&S.thatGirl)tn.value=S.thatGirl.notes||'';}catch(e){console.error("init error:",e);}
 }
 
 // ===== LIFE HEALTH SCORES =====
@@ -2380,7 +2559,7 @@ Give her exactly 3 high-leverage actions for today in this format — be specifi
 2. [Action — be specific]  
 3. [Action — be specific]`;
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:200,messages:[{role:'user',content:prompt}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':'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'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:200,messages:[{role:'user',content:prompt}]})});
     const data=await resp.json();
     const txt=data.content&&data.content[0]?data.content[0].text:'Could not generate focus — check your connection.';
     el.innerHTML=txt.split('\n').filter(l=>l.trim()).map((l,i)=>i===0?`<div style="font-size:11px;color:var(--accent2);font-style:italic;margin-bottom:.5rem;line-height:1.6">${l}</div>`:`<div style="font-size:11px;color:var(--text);margin-bottom:.3rem;line-height:1.5">${l}</div>`).join('');
@@ -2680,46 +2859,6 @@ const SAL_DEFAULT_SUPPS = [
   {id:'ds4', name:'Ashwagandha', dose:'Evening with food', who:'sal'},
 ];
 
-// ===== DAILY HABIT TRACKER (Temple Overview) =====
-function rDailyTracker(){
-  const el=document.getElementById('w-daily-tracker');if(!el)return;
-  const td=today();
-  const trackerItems=[
-    {key:'morning-prayer',label:'Morning Prayer 🙏🏾',icon:'🙏🏾'},
-    {key:'workout',label:'Workout 💪🏾',icon:'💪🏾'},
-    {key:'water',label:'Water Intake 💧',icon:'💧'},
-    {key:'anti-inf',label:'Anti-Inflammatory Eating 🥗',icon:'🥗'},
-    {key:'read',label:'Read / Learn 📖',icon:'📖'},
-  ];
-  if(!S.dailyHabits)S.dailyHabits={};
-  if(!S.dailyHabits[td])S.dailyHabits[td]={};
-
-  const habitsHTML=trackerItems.map(item=>{
-    const done=S.dailyHabits[td][item.key];
-    return`<div style="display:flex;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--bg2)">
-      <div onclick="tgDailyHabit('${item.key}')" style="width:22px;height:22px;border-radius:6px;border:1.5px solid ${done?'var(--accent)':'var(--border)'};background:${done?'var(--accent)':'transparent'};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;transition:all .15s">${done?'✓':''}</div>
-      <span style="font-size:12px;color:var(--text);font-weight:${done?'400':'500'};${done?'text-decoration:line-through;color:var(--text3)':''}">${item.label}</span>
-    </div>`;
-  }).join('');
-
-  // Sal's supplement stack
-  const salSupps=SAL_DEFAULT_SUPPS.concat((S.supplements||[]).filter(s=>s.who==='sal'));
-  if(!S.supplementLog)S.supplementLog={};
-  const suppHTML=salSupps.map(s=>{
-    const key=`${td}-${s.id}-check`;const done=S.supplementLog[key];
-    return`<div style="display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid var(--bg2)">
-      <div onclick="tgSuppCheck('${key}')" style="width:20px;height:20px;border-radius:5px;border:1.5px solid ${done?'var(--well-accent)':'var(--border)'};background:${done?'var(--well-accent)':'transparent'};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex-shrink:0">${done?'✓':''}</div>
-      <div style="flex:1"><div style="font-size:11px;font-weight:500;color:var(--text)">${s.name}</div><div style="font-size:9px;color:var(--text3)">${s.dose}</div></div>
-    </div>`;
-  }).join('');
-
-  el.innerHTML=`<div style="margin-bottom:.75rem">${habitsHTML}</div>
-  <div style="border-top:1px solid var(--bg2);padding-top:.6rem;margin-top:.3rem">
-    <div class="sl">💊 Supplement Check-in — Sal's Stack</div>
-    ${suppHTML}
-  </div>`;
-}
-
 function tgDailyHabit(key){
   const td=today();if(!S.dailyHabits)S.dailyHabits={};if(!S.dailyHabits[td])S.dailyHabits[td]={};
   S.dailyHabits[td][key]=!S.dailyHabits[td][key];if(S.dailyHabits[td][key])spawnC();sv();rDailyTracker();
@@ -2731,10 +2870,12 @@ if(!S.tgTasks)S.tgTasks=[];
 if(!S.nxt.tgTask)S.nxt.tgTask=1;
 function rTGTasks(){
   const el=document.getElementById('tg-tasks-list');if(!el)return;
-  if(!S.tgTasks||!S.tgTasks.length){el.innerHTML='<div class="es">No tasks yet — add what needs to get done.</div>';return;}
-  el.innerHTML=S.tgTasks.map(t=>`<div class="task-item"><div class="tcb ${t.done?'done':''}" onclick="tgTGTask(${t.id})" role="button" style="border-color:#a87898"></div><div style="flex:1"><div class="tt ${t.done?'done':''}">${t.text}</div><span class="tag tg-${t.priority}" style="margin-top:.2rem">${t.priority==='high'?'High':t.priority==='med'?'Med':'Low'}</span></div><button onclick="delTGTask(${t.id})" class="db">×</button></div>`).join('');
+  if(!S.tgTasks||!S.tgTasks.length){el.innerHTML='<div class="es">No tasks yet.</div>';return;}
+  el.innerHTML=S.tgTasks.map(t=>'<div class="task-item" id="edit-tgt'+t.id+'"><div class="tcb '+(t.done?'done':'')+'" onclick="tgTGTask('+t.id+')" role="button" style="border-color:#a87898"></div><div style="flex:1"><div class="tt '+(t.done?'done':'')+'">'+t.text+'</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag tg-'+t.priority+'">'+(t.priority==='high'?'High':t.priority==='med'?'Med':'Low')+'</span>'+(t.date?'<span class="tag tg-d">'+t.date+'</span>':'')+'</div></div><button onclick="startEditTGTask('+t.id+')" class="db" style="margin-right:.15rem;font-size:10px">✏️</button><button onclick="delTGTask('+t.id+')" class="db">×</button></div>').join('');
 }
-function addTGTask(){const t=document.getElementById('tg-task-t').value.trim();if(!t)return;if(!S.tgTasks)S.tgTasks=[];S.tgTasks.push({id:S.nxt.tgTask++,text:t,priority:document.getElementById('tg-task-p').value,done:false});document.getElementById('tg-task-t').value='';sv();rTGTasks();}
+function startEditTGTask(id){const t=(S.tgTasks||[]).find(x=>x.id===id);if(!t)return;const el=document.getElementById('edit-tgt'+id);if(!el)return;el.innerHTML='<div class="tcb" style="border-color:#a87898;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:.3rem"><input class="ai" id="etgt'+id+'" value="'+t.text.replace(/"/g,'&quot;')+'" style="font-size:12px"><div style="display:flex;gap:.3rem"><input class="ai" id="etgtd'+id+'" type="date" value="'+(t.date||'')+'" style="max-width:130px"><button onclick="saveEditTGTask('+id+')" style="background:#a87898;border:none;border-radius:5px;padding:.25rem .5rem;color:#fff;font-size:10px;cursor:pointer">&#10003;</button><button onclick="rTGTasks()" style="background:var(--bg2);border:none;border-radius:5px;padding:.25rem .4rem;font-size:10px;cursor:pointer">&#10005;</button></div></div>';}
+function saveEditTGTask(id){const t=(S.tgTasks||[]).find(x=>x.id===id);if(!t)return;const ti=document.getElementById('etgt'+id);const dt=document.getElementById('etgtd'+id);if(ti)t.text=ti.value.trim()||t.text;if(dt)t.date=dt.value||t.date;sv();rTGTasks();}
+function addTGTask(){const t=document.getElementById('tg-task-t').value.trim();if(!t)return;if(!S.tgTasks)S.tgTasks=[];const d=document.getElementById('tg-task-d');S.tgTasks.push({id:S.nxt.tgTask++,text:t,priority:document.getElementById('tg-task-p').value,date:d?d.value:'',done:false});document.getElementById('tg-task-t').value='';if(d)d.value='';sv();rTGTasks();}
 function tgTGTask(id){const t=S.tgTasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done)spawnC();sv();rTGTasks();}
 function delTGTask(id){S.tgTasks=S.tgTasks.filter(x=>x.id!==id);sv();rTGTasks();}
 
@@ -2767,9 +2908,9 @@ if(!S.nxt.sslTask)S.nxt.sslTask=1;
 function rSSLMasterTasks(){
   const el=document.getElementById('ssl-master-tasks');if(!el)return;
   if(!S.sslTasks||!S.sslTasks.length){el.innerHTML='<div class="es">No tasks yet.</div>';return;}
-  el.innerHTML=S.sslTasks.map(t=>`<div class="task-item"><div class="tcb scb ${t.done?'done':''}" onclick="tgSSLTask(${t.id})" role="button" style="border-color:var(--sal-accent)"></div><div style="flex:1"><div class="tt ${t.done?'done':''}">${t.text}</div><span class="tag tg-${t.priority}" style="margin-top:.2rem">${t.priority==='high'?'High':t.priority==='med'?'Med':'Low'}</span></div><button onclick="delSSLTask(${t.id})" class="db">×</button></div>`).join('');
+  el.innerHTML=S.sslTasks.map(t=>'<div class="task-item"><div class="tcb scb '+(t.done?'done':'')+' " onclick="tgSSLTask('+t.id+')" role="button" style="border-color:var(--sal-accent)"></div><div style="flex:1"><div class="tt '+(t.done?'done':'')+'">'+(t.text)+'</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span class="tag tg-'+t.priority+'">'+(t.priority==='high'?'High':t.priority==='med'?'Med':'Low')+'</span>'+(t.date?'<span class="tag tg-d">'+t.date+'</span>':'')+'</div></div><button onclick="delSSLTask('+t.id+')" class="db">×</button></div>').join('');
 }
-function addSSLTask(){const t=document.getElementById('ssl-task-t').value.trim();if(!t)return;if(!S.sslTasks)S.sslTasks=[];S.sslTasks.push({id:S.nxt.sslTask++,text:t,priority:document.getElementById('ssl-task-p').value,done:false});document.getElementById('ssl-task-t').value='';sv();rSSLMasterTasks();}
+function addSSLTask(){const t=document.getElementById('ssl-task-t').value.trim();if(!t)return;if(!S.sslTasks)S.sslTasks=[];const d=document.getElementById('ssl-task-d');S.sslTasks.push({id:S.nxt.sslTask++,text:t,priority:document.getElementById('ssl-task-p').value,date:d?d.value:'',done:false});document.getElementById('ssl-task-t').value='';if(d)d.value='';sv();rSSLMasterTasks();}
 function tgSSLTask(id){const t=S.sslTasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done)spawnC();sv();rSSLMasterTasks();}
 function delSSLTask(id){S.sslTasks=S.sslTasks.filter(x=>x.id!==id);sv();rSSLMasterTasks();}
 
@@ -2779,9 +2920,9 @@ if(!S.nxt.smTask)S.nxt.smTask=1;
 function rSMMasterTasks(){
   const el=document.getElementById('sm-master-tasks');if(!el)return;
   if(!S.smTasks||!S.smTasks.length){el.innerHTML='<div class="es">No tasks yet.</div>';return;}
-  el.innerHTML=S.smTasks.map(t=>`<div class="task-item"><div class="tcb scb ${t.done?'done':''}" onclick="tgSMTask(${t.id})" role="button" style="border-color:var(--simpsons-accent)"></div><div style="flex:1"><div class="tt ${t.done?'done':''}">${t.text}</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span style="font-size:9px;padding:2px 6px;border-radius:20px;background:var(--simpsons-bg);color:var(--simpsons-accent);font-weight:600">${t.section||'General'}</span><span class="tag tg-${t.priority}">${t.priority==='high'?'High':t.priority==='med'?'Med':'Low'}</span></div></div><button onclick="delSMTask(${t.id})" class="db">×</button></div>`).join('');
+  el.innerHTML=S.smTasks.map(t=>'<div class="task-item"><div class="tcb scb '+(t.done?'done':'')+' " onclick="tgSMTask('+t.id+')" role="button" style="border-color:var(--simpsons-accent)"></div><div style="flex:1"><div class="tt '+(t.done?'done':'')+'">'+(t.text)+'</div><div style="display:flex;gap:.3rem;margin-top:.2rem;flex-wrap:wrap"><span style="font-size:9px;padding:2px 6px;border-radius:20px;background:var(--simpsons-bg);color:var(--simpsons-accent);font-weight:600">'+(t.section||'General')+'</span><span class="tag tg-'+t.priority+'">'+(t.priority==='high'?'High':t.priority==='med'?'Med':'Low')+'</span>'+(t.date?'<span class="tag tg-d">'+t.date+'</span>':'')+'</div></div><button onclick="delSMTask('+t.id+')" class="db">×</button></div>').join('');
 }
-function addSMTask(){const t=document.getElementById('sm-task-t').value.trim();if(!t)return;if(!S.smTasks)S.smTasks=[];S.smTasks.push({id:S.nxt.smTask++,text:t,section:document.getElementById('sm-task-sec').value,priority:document.getElementById('sm-task-p').value,done:false});document.getElementById('sm-task-t').value='';sv();rSMMasterTasks();}
+function addSMTask(){const t=document.getElementById('sm-task-t').value.trim();if(!t)return;if(!S.smTasks)S.smTasks=[];const d=document.getElementById('sm-task-d');S.smTasks.push({id:S.nxt.smTask++,text:t,section:document.getElementById('sm-task-sec').value,priority:document.getElementById('sm-task-p').value,date:d?d.value:'',done:false});document.getElementById('sm-task-t').value='';if(d)d.value='';sv();rSMMasterTasks();}
 function tgSMTask(id){const t=S.smTasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done)spawnC();sv();rSMMasterTasks();}
 function delSMTask(id){S.smTasks=S.smTasks.filter(x=>x.id!==id);sv();rSMMasterTasks();}
 
@@ -2873,7 +3014,7 @@ async function runPnBrainstorm(){
   const status=document.getElementById('pn-bs-status');if(status)status.textContent='Generating...';
   const result=document.getElementById('pn-brainstorm-result');if(result)result.innerHTML='<div class="air" style="color:var(--text3);font-style:italic">Building your brainstorm...</div>';
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`You are a creative director helping Sal, a Black Christian woman photographer and creative entrepreneur in Dallas TX. Her photography and creative studio is Pneuma & Co. — it's faith-informed but not overtly religious. She shoots lifestyle, brand, engagement, and weddings. Her aesthetic is editorial, cinematic, intentional. Her co-creator is husband Ray who does iPhone cinematic content.\n\nBrand brainstorm request: "${input}"\n\nRespond with a helpful, specific, creative brainstorm. Use bullet points. Keep it practical and doable. Max 300 words.`}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':'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'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`You are a creative director helping Sal, a Black Christian woman photographer and creative entrepreneur in Dallas TX. Her photography and creative studio is Pneuma & Co. — it's faith-informed but not overtly religious. She shoots lifestyle, brand, engagement, and weddings. Her aesthetic is editorial, cinematic, intentional. Her co-creator is husband Ray who does iPhone cinematic content.\n\nBrand brainstorm request: "${input}"\n\nRespond with a helpful, specific, creative brainstorm. Use bullet points. Keep it practical and doable. Max 300 words.`}]})});
     const data=await resp.json();const txt=data.content&&data.content[0]?data.content[0].text:'Error generating brainstorm.';
     if(result)result.innerHTML=`<div class="air" style="margin-top:.6rem;font-size:12px;line-height:1.7;white-space:pre-wrap">${txt}</div>`;
     if(status)status.textContent='Done ✓';
@@ -2888,7 +3029,7 @@ async function runSMBrainstorm(){
   const status=document.getElementById('sm-bs-status');if(status)status.textContent='Generating...';
   const result=document.getElementById('sm-brainstorm-result');if(result)result.innerHTML='<div class="air" style="color:var(--text3);font-style:italic">Building your brainstorm...</div>';
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`You are a brand strategist for Sal & Ray Simpson (Love, the Simpsons). They are a Black millennial married couple in Dallas building a relatable Kingdom marriage brand — podcast, content creation, couples brand. Faith is central but not preachy. Ray does iPhone cinematic content; Sal is the brand voice, visuals strategy, and creative director.\n\nBrand brainstorm request: "${input}"\n\nRespond with specific, creative, actionable ideas. Use bullet points. Keep it real and relevant to their audience. Max 300 words.`}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':'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'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`You are a brand strategist for Sal & Ray Simpson (Love, the Simpsons). They are a Black millennial married couple in Dallas building a relatable Kingdom marriage brand — podcast, content creation, couples brand. Faith is central but not preachy. Ray does iPhone cinematic content; Sal is the brand voice, visuals strategy, and creative director.\n\nBrand brainstorm request: "${input}"\n\nRespond with specific, creative, actionable ideas. Use bullet points. Keep it real and relevant to their audience. Max 300 words.`}]})});
     const data=await resp.json();const txt=data.content&&data.content[0]?data.content[0].text:'Error generating brainstorm.';
     if(result)result.innerHTML=`<div class="air" style="margin-top:.6rem;font-size:12px;line-height:1.7;white-space:pre-wrap">${txt}</div>`;
     if(status)status.textContent='Done ✓';
@@ -2901,7 +3042,7 @@ function addSmContent(){
   const t=document.getElementById('sm-coti').value.trim();if(!t)return;
   const dtEl=document.getElementById('sm-codt');
   S.smContent.push({id:S.nxt.smco++,title:t,platform:document.getElementById('sm-copl').value,type:document.getElementById('sm-coty').value,date:dtEl?dtEl.value||today():today(),status:document.getElementById('sm-cost').value});
-  document.getElementById('sm-coti').value='';if(dtEl)dtEl.value='';sv();rSMContent();rSMOv();
+  document.getElementById('sm-coti').value='';if(dtEl)dtEl.value='';sv();rSMContent();rSMOv();bSMCal();
 }
 
 // ===== PATCH addShoot to include package type and amount (no location) =====
@@ -2921,5 +3062,298 @@ function rPNShoots(){
   el.innerHTML=[...S.pnShoots].sort((a,b)=>a.date.localeCompare(b.date)).map(s=>`<div class="pnec" style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:13px;font-weight:500;color:var(--pneuma-accent)">${s.title}</div><div style="font-size:11px;color:var(--text3);margin-top:.15rem">${s.date}${s.package?' · '+s.package:''}${s.amount?' · $'+s.amount.toLocaleString():''}</div></div><div style="display:flex;gap:.4rem;align-items:center"><span class="tag" style="background:${sc[s.status]};color:#fff">${s.status}</span><button onclick="delShoot(${s.id})" class="db">×</button></div></div>`).join('');
 }
 
+
+// ===== PWA SERVICE WORKER REGISTRATION =====
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    // Inline service worker as blob — no separate file needed
+    const swCode=`
+const CACHE='selah-v1';
+const ASSETS=['/'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{}))));
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
+    const clone=res.clone();
+    if(res.status===200)caches.open(CACHE).then(c=>c.put(e.request,clone));
+    return res;
+  }).catch(()=>caches.match('/'))));
+});
+`;
+    const blob=new Blob([swCode],{type:'application/javascript'});
+    const swURL=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swURL).catch(()=>{});
+  });
+}
+
+// ===== BOTTOM NAV SYNC =====
+const NAV_LABELS={
+  home:'💻 Overview',calendar:'📆 Calendar',tasks:'📌 Tasks',braindump:'🧠 Brain Dump',
+  habits:'🧩 Habits',faith:'🕊️ Abide in Him',marriage:'💍 1+1=3',thatgirl:'💅🏾 THAT Girl',
+  finances:'💰 The Bag',homepillar:'🏠 My Abode',pneuma:'📸 Pneuma & Co.',
+  signedsal:'💌 Signed Sally S',simpsons:'🫂 Love, the Simpsons',
+  cultivate:'⛪ Cultivate',wellness:'💪🏾 The Temple',pillars:'☰ All Pillars',
+};
+function syncBN(el){
+  // Sync bottom nav active state
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  if(el&&el.classList.contains('bn-item'))el.classList.add('active');
+  // Sync sidebar active (keeps desktop working)
+  const view=el?el.dataset.view:'home';
+  const title=NAV_LABELS[view]||'The Selah Center';
+  const mh=document.getElementById('mobile-section-title');if(mh)mh.textContent=title;
+  // Scroll active bn-item into view
+  if(el&&el.classList.contains('bn-item')){
+    el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  }
+}
+// Patch navTo to also sync bottom nav
+const _origNavTo=typeof navTo==='function'?navTo:null;
+
+// ===== GOOGLE CALENDAR INTEGRATION =====
+// Uses Google Identity Services + Calendar API v3
+// Credentials are set by user after Cloud Console setup
+const GCAL_CONFIG={
+  clientId:'331385706690-0f84sn2a05u5rqeicqk2u0ksd83t5t63.apps.googleusercontent.com',
+  apiKey:localStorage.getItem('gcal_key')||'',
+  scopes:'https://www.googleapis.com/auth/calendar.readonly',
+  discoveryDoc:'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+};
+
+let gcalTokenClient=null;
+let gcalAccessToken=null;
+let gcalReady=false;
+
+function initGCal(){
+  // Load Google API client
+  const gapiScript=document.createElement('script');
+  gapiScript.src='https://apis.google.com/js/api.js';
+  gapiScript.onload=()=>{
+    gapi.load('client',async()=>{
+      if(!GCAL_CONFIG.apiKey){setGCalStatus('Set API key first');return;}
+      await gapi.client.init({apiKey:GCAL_CONFIG.apiKey,discoveryDocs:[GCAL_CONFIG.discoveryDoc]});
+      gcalReady=true;
+      // If we already have token from storage, use it
+      const saved=localStorage.getItem('gcal_token');
+      if(saved){gcalAccessToken=saved;gapi.client.setToken({access_token:saved});fetchGCalEvents();}
+      else setGCalStatus('Ready — click Connect');
+    });
+  };
+  document.head.appendChild(gapiScript);
+
+  // Load GIS token client
+  const gisScript=document.createElement('script');
+  gisScript.src='https://accounts.google.com/gsi/client';
+  gisScript.onload=()=>{
+    if(!GCAL_CONFIG.clientId)return;
+    gcalTokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:GCAL_CONFIG.clientId,
+      scope:GCAL_CONFIG.scopes,
+      callback:(resp)=>{
+        if(resp.error){setGCalStatus('Auth error: '+resp.error);return;}
+        gcalAccessToken=resp.access_token;
+        localStorage.setItem('gcal_token',resp.access_token);
+        gapi.client.setToken({access_token:resp.access_token});
+        fetchGCalEvents();
+      },
+    });
+  };
+  document.head.appendChild(gisScript);
+}
+
+function handleGCalBtn(){
+  // If not configured yet, show config panel
+  if(!GCAL_CONFIG.clientId||!GCAL_CONFIG.apiKey){
+    showGCalConfig();return;
+  }
+  if(gcalAccessToken){
+    // Already connected — sign out
+    google.accounts.oauth2.revoke(gcalAccessToken,()=>{});
+    gcalAccessToken=null;localStorage.removeItem('gcal_token');
+    document.getElementById('gcal-events').innerHTML='<span style="color:var(--text3);font-style:italic">Disconnected.</span>';
+    document.getElementById('gcal-status').textContent='Not connected';
+    document.getElementById('gcal-btn').textContent='Connect';
+    return;
+  }
+  if(gcalTokenClient)gcalTokenClient.requestAccessToken({prompt:''});
+  else{initGCal();setTimeout(()=>{if(gcalTokenClient)gcalTokenClient.requestAccessToken({prompt:''});},1500);}
+}
+
+function setGCalStatus(msg){
+  const el=document.getElementById('gcal-status');if(el)el.textContent=msg;
+}
+
+async function fetchGCalEvents(){
+  setGCalStatus('Loading...');
+  document.getElementById('gcal-btn').textContent='Disconnect';
+  try{
+    const now=new Date();
+    const end=new Date(now);end.setDate(now.getDate()+7);
+    const resp=await gapi.client.calendar.events.list({
+      calendarId:'primary',
+      timeMin:now.toISOString(),
+      timeMax:end.toISOString(),
+      showDeleted:false,
+      singleEvents:true,
+      maxResults:15,
+      orderBy:'startTime',
+    });
+    const events=resp.result.items||[];
+    renderGCalEvents(events);
+    setGCalStatus('✓ Connected · '+events.length+' events');
+    // Also fetch secondary calendars (Cultivate, Simpsons etc.)
+    fetchGCalSecondary();
+  }catch(e){
+    setGCalStatus('Error — reconnecting...');
+    gcalAccessToken=null;localStorage.removeItem('gcal_token');
+    document.getElementById('gcal-btn').textContent='Connect';
+    document.getElementById('gcal-events').innerHTML='<span style="color:#a03030">Session expired. Reconnect.</span>';
+  }
+}
+
+async function fetchGCalSecondary(){
+  try{
+    const calListResp=await gapi.client.calendar.calendarList.list({});
+    const cals=calListResp.result.items||[];
+    // Store calendar list for the overview calendar display
+    S.gcalCalendars=cals.map(c=>({id:c.id,name:c.summary,color:c.backgroundColor}));
+    sv();
+  }catch(e){}
+}
+
+const GCAL_COLORS={
+  '#4285f4':'#4285f4','#33b679':'#33b679','#8e24aa':'#8e24aa',
+  '#e67c73':'#e67c73','#f6c026':'#f6c026','#f5511d':'#f5511d',
+  '#039be5':'#039be5','#616161':'#616161','#3f51b5':'#3f51b5',
+  '#0b8043':'#0b8043','#d50000':'#d50000',
+};
+function renderGCalEvents(events){
+  const el=document.getElementById('gcal-events');
+  if(!events.length){el.innerHTML='<div class="es">No upcoming events in the next 7 days.</div>';return;}
+  const days={};
+  events.forEach(ev=>{
+    const start=ev.start.dateTime||ev.start.date;
+    const d=new Date(start);
+    const key=d.toDateString();
+    if(!days[key])days[key]=[];
+    days[key].push(ev);
+  });
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  el.innerHTML=Object.entries(days).slice(0,5).map(([dayStr,evs])=>{
+    const d=new Date(dayStr);
+    const isToday=d.toDateString()===new Date().toDateString();
+    return`<div style="margin-bottom:.6rem">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:${isToday?'var(--accent)':'var(--text3)'};margin-bottom:.3rem">${isToday?'Today · ':dayNames[d.getDay()]+' · '}${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+      ${evs.map(ev=>{
+        const start=ev.start.dateTime;
+        const time=start?new Date(start).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'All day';
+        const color=ev.colorId?Object.values(GCAL_COLORS)[parseInt(ev.colorId)-1]||'#4285f4':'#4285f4';
+        return`<div style="display:flex;align-items:flex-start;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--bg2)">
+          <div style="width:3px;height:36px;border-radius:2px;background:${color};flex-shrink:0;margin-top:2px"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:500;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${ev.summary||'(No title)'}</div>
+            <div style="font-size:10px;color:var(--text3)">${time}${ev.location?' · '+ev.location.split(',')[0]:''}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function showGCalConfig(){
+  const existing=document.getElementById('gcal-config-panel');
+  if(existing){existing.remove();return;}
+  const panel=document.createElement('div');
+  panel.id='gcal-config-panel';
+  panel.style.cssText='background:var(--card);border:1px solid #4285F4;border-radius:12px;padding:1rem;margin-top:.75rem;font-size:12px;';
+  panel.innerHTML=`
+    <div style="font-weight:600;color:var(--text);margin-bottom:.5rem">🔧 Connect Google Calendar</div>
+    <p style="color:var(--text3);line-height:1.6;margin-bottom:.75rem;font-size:11px">Paste your credentials from Google Cloud Console. These are stored only in your browser.</p>
+    <div style="margin-bottom:.5rem"><div class="sl">Client ID</div><input class="ai" id="gcal-cid-input" placeholder="123456789-abc...apps.googleusercontent.com" style="width:100%;font-size:11px"></div>
+    <div style="margin-bottom:.75rem"><div class="sl">API Key</div><input class="ai" id="gcal-key-input" placeholder="AIzaSy..." style="width:100%;font-size:11px"></div>
+    <div style="display:flex;gap:.5rem">
+      <button onclick="saveGCalConfig()" style="background:#4285F4;color:#fff;border:none;border-radius:7px;padding:.4rem .9rem;font-size:11px;cursor:pointer;font-family:inherit;font-weight:600">Save & Connect</button>
+      <button onclick="document.getElementById('gcal-config-panel').remove()" style="background:var(--bg2);color:var(--text);border:none;border-radius:7px;padding:.4rem .9rem;font-size:11px;cursor:pointer;font-family:inherit">Cancel</button>
+    </div>
+    <p style="font-size:10px;color:var(--text3);margin-top:.6rem;line-height:1.6">Don't have credentials yet? See the setup guide below ↓</p>
+  `;
+  document.getElementById('gcal-card').appendChild(panel);
+}
+
+function saveGCalConfig(){
+  const cid=document.getElementById('gcal-cid-input').value.trim();
+  const key=document.getElementById('gcal-key-input').value.trim();
+  if(!cid||!key){alert('Both fields required.');return;}
+  GCAL_CONFIG.clientId=cid;
+  GCAL_CONFIG.apiKey=key;
+  localStorage.setItem('gcal_cid',cid);
+  localStorage.setItem('gcal_key',key);
+  document.getElementById('gcal-config-panel').remove();
+  setGCalStatus('Credentials saved — connecting...');
+  initGCal();
+  setTimeout(()=>{if(gcalTokenClient)gcalTokenClient.requestAccessToken({prompt:'consent'});},2000);
+}
+
+// Load saved GCal credentials on startup
+(function loadSavedGCalCreds(){
+  const cid=localStorage.getItem('gcal_cid');
+  const key=localStorage.getItem('gcal_key');
+  if(cid&&key){GCAL_CONFIG.clientId=cid;GCAL_CONFIG.apiKey=key;initGCal();}
+})();
+
+// ===== V14 NEW FUNCTIONS =====
+
+// Account balance edit
+function editAcctBalance(id){const a=S.accounts.find(x=>x.id===id);if(!a)return;const v=prompt('Update balance for '+a.name+' (current: $'+a.balance+'):',a.balance);if(v===null)return;const n=parseFloat(v);if(!isNaN(n)){a.balance=n;sv();rHF();rAccts();}}
+
+// Simpsons Overview Goals
+function rSMOvGoals(){
+  const el=document.getElementById('sm-ov-goals');if(!el)return;
+  if(!S.smOvGoals||!S.smOvGoals.length){el.innerHTML='<div class="es">No brand goals yet.</div>';return;}
+  el.innerHTML=S.smOvGoals.map(g=>'<div class="task-item"><div class="tcb '+(g.done?'done':'')+'" onclick="tgSMOvGoal('+g.id+')" role="button" style="border-color:var(--simpsons-accent)"></div><div style="flex:1"><div class="tt '+(g.done?'done':'')+'">'+g.text+'</div>'+(g.date?'<span class="tag tg-d" style="margin-top:.2rem">'+g.date+'</span>':'')+'</div><button onclick="delSMOvGoal('+g.id+')" class="db">&#215;</button></div>').join('');
+}
+function addSMOvGoal(){const ti=document.getElementById('sm-og-t');if(!ti||!ti.value.trim())return;if(!S.smOvGoals)S.smOvGoals=[];if(!S.nxt.smog)S.nxt.smog=1;const d=document.getElementById('sm-og-d');S.smOvGoals.push({id:S.nxt.smog++,text:ti.value.trim(),date:d?d.value:'',done:false});ti.value='';if(d)d.value='';sv();rSMOvGoals();}
+function tgSMOvGoal(id){const g=(S.smOvGoals||[]).find(x=>x.id===id);if(!g)return;g.done=!g.done;if(g.done)spawnC();sv();rSMOvGoals();}
+function delSMOvGoal(id){S.smOvGoals=(S.smOvGoals||[]).filter(x=>x.id!==id);sv();rSMOvGoals();}
+
+// Pneuma Revenue Widget
+function rPNRevWidget(){
+  const el=document.getElementById('pn-rev-widget');if(!el)return;
+  if(!S.pnRevTxns)S.pnRevTxns=[];
+  const rev=S.pnRevTxns.filter(t=>t.type==='revenue').reduce((s,t)=>s+t.amount,0);
+  const exp=S.pnRevTxns.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const profit=rev-exp;
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem"><div style="background:var(--pneuma-bg);border-radius:8px;padding:.65rem;text-align:center"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Revenue</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--sage);font-weight:600">$'+rev.toLocaleString()+'</div></div><div style="background:var(--pneuma-bg);border-radius:8px;padding:.65rem;text-align:center"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Expenses</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;color:#a03030;font-weight:600">$'+exp.toLocaleString()+'</div></div><div style="background:var(--pneuma-bg);border-radius:8px;padding:.65rem;text-align:center"><div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">Profit</div><div style="font-family:Cormorant Garamond,serif;font-size:22px;color:'+(profit>=0?'var(--pneuma-accent)':'#a03030')+';font-weight:600">$'+profit.toLocaleString()+'</div></div></div>';
+  const tl=document.getElementById('pn-rev-txns');if(!tl)return;
+  tl.innerHTML=[...S.pnRevTxns].reverse().slice(0,5).map(t=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:.25rem 0;border-bottom:1px solid var(--bg2);font-size:11px"><span>'+t.desc+'</span><div style="display:flex;gap:.4rem;align-items:center"><span style="color:'+(t.type==='revenue'?'var(--sage)':'#a03030')+';font-weight:600">'+(t.type==='revenue'?'+':'-')+'$'+t.amount.toLocaleString()+'</span><button onclick="delPNRevTxn('+t.id+')" class="db" style="font-size:9px">&#215;</button></div></div>').join('');
+}
+function addPNRevTxn(){const d=document.getElementById('pnrw-desc');const a=document.getElementById('pnrw-amt');const ty=document.getElementById('pnrw-type');if(!d||!a||!d.value.trim()||!parseFloat(a.value))return;if(!S.pnRevTxns)S.pnRevTxns=[];if(!S.nxt.pnrt)S.nxt.pnrt=1;S.pnRevTxns.push({id:S.nxt.pnrt++,desc:d.value.trim(),amount:parseFloat(a.value),type:ty?ty.value:'revenue',date:today()});d.value='';a.value='';sv();rPNRevWidget();}
+function delPNRevTxn(id){S.pnRevTxns=(S.pnRevTxns||[]).filter(t=>t.id!==id);sv();rPNRevWidget();}
+
+// Supplement Weekly Tracker
+const SAL_SUPPS_V14=[
+  {key:'multivitamin',label:'Multivitamin',dose:'Morning with food'},
+  {key:'probiotic',label:'Probiotic',dose:'30 min before food'},
+  {key:'greentea',label:'Green Tea Extract',dose:'Morning with food'},
+  {key:'ashwagandha',label:'Ashwagandha',dose:'Evening with food'},
+];
+function rSuppWeekly(){
+  const el=document.getElementById('w-supp-weekly');if(!el)return;
+  if(!S.suppWeekly)S.suppWeekly={};
+  const DAYS7=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const td=new Date();const ws=new Date(td);ws.setDate(td.getDate()-td.getDay());
+  const wdates=DAYS7.map((_,i)=>{const d=new Date(ws);d.setDate(ws.getDate()+i);return d.toISOString().slice(0,10);});
+  const tds=td.toISOString().slice(0,10);
+  let h='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:10px"><thead><tr><th style="text-align:left;padding:.3rem .5rem;color:var(--text3);font-weight:600;white-space:nowrap">Supplement</th>'+wdates.map((d,i)=>'<th style="text-align:center;padding:.3rem .2rem;min-width:32px;color:'+(d===tds?'var(--well-accent)':'var(--text3)')+';font-weight:'+(d===tds?700:600)+'">'+DAYS7[i]+'</th>').join('')+'</tr></thead><tbody>';
+  SAL_SUPPS_V14.forEach(s=>{h+='<tr style="border-bottom:1px solid var(--bg2)"><td style="padding:.45rem .5rem"><div style="font-weight:500;font-size:11px">'+s.label+'</div><div style="font-size:9px;color:var(--text3)">'+s.dose+'</div></td>'+wdates.map(d=>{const key=d+'-'+s.key;const done=S.suppWeekly[key];return'<td style="text-align:center;padding:.3rem .2rem"><div onclick="tgSuppDay(\''+key+'\')" style="width:24px;height:24px;border-radius:50%;border:1.5px solid '+(done?'var(--well-accent)':'var(--border)')+';background:'+(done?'var(--well-accent)':'transparent')+';cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:11px;color:#fff;transition:all .15s">'+(done?'&#10003;':'')+'</div></td>';}).join('')+'</tr>';});
+  h+='</tbody></table></div>';
+  el.innerHTML=h;
+}
+function tgSuppDay(key){if(!S.suppWeekly)S.suppWeekly={};S.suppWeekly[key]=!S.suppWeekly[key];if(S.suppWeekly[key])spawnC();sv();rSuppWeekly();}
+function rDailyTracker(){rSuppWeekly();}
+
+(function(){const b=document.querySelector('[data-ft="transactions"]');if(b)b.style.display='none';})();
 init();
 </script>
+</body>
+</html>
