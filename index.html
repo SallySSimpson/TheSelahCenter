@@ -2198,7 +2198,7 @@ async function fetchWeather(){
 }
 
 // ===== GOOGLE CALENDAR =====
-const GCAL_CLIENT_ID='YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com';
+const GCAL_CLIENT_ID='331385706690-0f84sn2a05u5rqeicqk2u0ksd83t5t63.apps.googleusercontent.com';
 const GCAL_SCOPES='https://www.googleapis.com/auth/calendar.readonly';
 let gcalTokenClient=null,gcalAccessToken=null,gcalConnected=false;
 
@@ -2207,7 +2207,7 @@ function initGCal(){
   gcalTokenClient=google.accounts.oauth2.initTokenClient({client_id:GCAL_CLIENT_ID,scope:GCAL_SCOPES,callback:(resp)=>{if(resp.error)return;gcalAccessToken=resp.access_token;gcalConnected=true;S.gcalConnected=true;sv();updateGCalUI(true);fetchGCalEvents();}});
 }
 function connectGCal(){
-  if(GCAL_CLIENT_ID==='YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com'){
+  if(GCAL_CLIENT_ID==='331385706690-0f84sn2a05u5rqeicqk2u0ksd83t5t63.apps.googleusercontent.com'){
     const note=document.getElementById('gcal-setup-note');
     if(note)note.innerHTML='<span style="color:var(--accent2)">⚠ To connect: create a Google Cloud project, enable Calendar API, create OAuth 2.0 Client ID, then paste it where it says YOUR_GOOGLE_CLIENT_ID_HERE in this file.</span>';
     return;
